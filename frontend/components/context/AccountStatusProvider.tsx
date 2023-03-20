@@ -1,5 +1,5 @@
 import { useLogin } from "@hooks/useLogin";
-import React, { createContext, useState } from "react";
+import React, { createContext, PropsWithChildren, useState } from "react";
 
 interface AccountStatus {
   isLoggedIn: boolean;
@@ -17,7 +17,9 @@ const defaultCtx: Partial<AccountContext> = {
 
 export const AccountStatusContext = createContext(defaultCtx);
 
-export const AccountStatusProvider: React.FC = (props): JSX.Element => {
+export const AccountStatusProvider: React.FC = (
+  props: PropsWithChildren
+): JSX.Element => {
   const [isLoggedIn, setIsLoggedin] = useState(false);
   const { setEmail, setPwd } = useLogin();
 

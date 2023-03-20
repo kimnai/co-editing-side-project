@@ -1,5 +1,6 @@
 import { ACTION_TYPES } from "lib/enum/View";
 import { Properties } from "lib/interface/View";
+import React from "react";
 
 export type View = "table" | "board";
 

@@ -1,6 +1,7 @@
 import React, {
   createContext,
   Dispatch,
+  PropsWithChildren,
   SetStateAction,
   useState,
 } from "react";
@@ -17,7 +18,9 @@ const defaultCtx: {
 
 export const AsideCtx = createContext(defaultCtx);
 
-export const AsideStatusProvider: React.FC = (props): JSX.Element => {
+export const AsideStatusProvider: React.FC = (
+  props: PropsWithChildren
+): JSX.Element => {
   const [status, setStatus] = useState<AsideStatus>("open");
 
   const handleClick = () => {

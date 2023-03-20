@@ -6,8 +6,7 @@ import {
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import React, { useState } from "react";
-// import { useLogin } from "../../hooks/useLogin";
-import classes from "../../styles/Login.module.css";
+import classes from "@style/Login.module.css";
 
 export const LoginForm: React.FC = () => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
@@ -31,7 +30,7 @@ export const LoginForm: React.FC = () => {
         <label htmlFor="password">Password</label>
         <input type={pwdIsVisible ? "text" : "password"} name="pwd" id="pwd" />
         <IconButton
-          size="small"
+          size="medium"
           onClick={() => setPwdIsVisible((prev) => !prev)}
           className={classes.iconBtn}
         >
@@ -42,7 +41,9 @@ export const LoginForm: React.FC = () => {
           )}
         </IconButton>
       </div>
-      <button>{hasAccount ? "Log in" : "Sign up"}</button>
+      <button className={classes.btn}>
+        {hasAccount ? "Log in" : "Sign up"}
+      </button>
       {hasAccount ? (
         <button className={classes.forgetPwdBtn}>Forget password?</button>
       ) : (

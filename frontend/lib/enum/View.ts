@@ -1,0 +1,7 @@
+export const enum ACTION_TYPES {
+  ADD_ROW = "ADD_ROW",
+  EDIT_DATA = "EDIT_DATA",
+  DELETE_DATA = "DELETE_DATA",
+
+  EDIT_NAME = "EDIT_NAME",
+}

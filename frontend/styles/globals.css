@@ -4,21 +4,24 @@
   --footer-height: 20rem;
   --aside-width: 25rem;
 
-  /* font */
+  /* font colors */
   --font-dark: #464f65;
   --font-rg: #8b8a86;
   --font-light: #6f7991;
 
   /* components */
+  /* background colors */
   --bg-rg: #f7f7f4;
-  --border-rg: #e0e0dd;
   --icon-rg: #b4b4b0;
-  --input-focus: #bdd2f0;
-  --error-bg: #fff4f1;
-  --error-border: #f05e62;
   --btn-bg: #fffefc;
+  --error-bg: #fff4f1;
 
-  /* utility */
+  /* border colors */
+  --border-rg: #e0e0dd;
+  --error-border: #f05e62;
+  --input-focus: #bdd2f0;
+
+  /* border radius */
   --border-ra-rg: 0.3rem;
 }
 

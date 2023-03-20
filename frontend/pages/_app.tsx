@@ -20,10 +20,8 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     });
 
   return (
-    <div>
-      <AsideStatusProvider>
-        {getLayout(<Component {...pageProps} />)}
-      </AsideStatusProvider>
-    </div>
+    <AsideStatusProvider>
+      {getLayout(<Component {...pageProps} />)}
+    </AsideStatusProvider>
   );
 }

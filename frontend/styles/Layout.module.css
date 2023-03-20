@@ -1,28 +1,26 @@
 .container {
-  position: relative;
-  min-height: 100vh;
-  width: 100%;
-
   display: grid;
   grid-template-columns: var(--aside-width) 1fr;
   grid-template-rows: var(--nav-height) 1fr;
 
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
   font-size: 1.6rem;
 }
 
 .aside {
+  grid-column: 1 / 2;
+  grid-row: 1/ -1;
+
   position: relative;
   width: var(--aside-width);
   min-height: 100vh;
   background-color: var(--bg-rg);
-  transition: all 0.5s;
-
-  grid-column: 1 / 2;
-  grid-row: 1/ -1;
-
+  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
-  padding: 2rem 1rem;
+  transition: all 0.5s;
 }
 
 .aside > * {
@@ -34,10 +32,12 @@
 }
 
 .aside .hover {
-  background-color: white;
-  box-shadow: 1rem 1rem lightgrey;
   right: 2rem;
   top: 2rem;
+
+  background-color: white;
+  box-shadow: 1rem 1rem lightgrey;
+
   border: 1px solid var(--border-rg);
 }
 
@@ -55,21 +55,21 @@
 }
 
 .main {
-  padding: 3rem;
-
   grid-column: 2 / -1;
   grid-row: 2 / -1;
-
   justify-self: center;
+
+  padding: 3rem;
 }
 
 .nav {
   grid-row: 1 /2;
   grid-column: 2/ -1;
-  padding: 1rem 3rem;
+
   display: flex;
   align-items: center;
   justify-content: flex-end;
 
   font-weight: 600;
+  padding: 1rem 3rem;
 }

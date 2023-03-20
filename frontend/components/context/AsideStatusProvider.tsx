@@ -1,4 +1,9 @@
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useState,
+} from "react";
 
 type AsideStatus = "open" | "close" | "hover";
 
@@ -12,7 +17,7 @@ const defaultCtx: {
 
 export const AsideCtx = createContext(defaultCtx);
 
-export const AsideStatusProvider = (props) => {
+export const AsideStatusProvider: React.FC = (props): JSX.Element => {
   const [status, setStatus] = useState<AsideStatus>("open");
 
   const handleClick = () => {

@@ -5,7 +5,7 @@ export const handleSubmitLogin = (email: string, pwd: string) => {
   let pwdIsValid = false;
 
   if (email.match(/\w*\@gmail.com/)) emailIsValid = true;
-  if (pwd.length >= 8 && pwd.match(/\w*[!~@#$%^&*]/)) pwdIsValid = true;
+  if (pwd.length >= 8 && pwd.match(/[!~@#$%^&*\w]/)) pwdIsValid = true;
   return { emailIsValid, pwdIsValid };
 };
 

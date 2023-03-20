@@ -1,17 +1,19 @@
-import {
-  CancelRounded,
-  DeleteRounded,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import React, { useState } from "react";
 import classes from "@style/Login.module.css";
 
-export const LoginForm: React.FC = () => {
+export const LoginForm: React.FC<{ action: "Log in" | "Sign up" }> = ({
+  action,
+}): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
-  const [hasAccount, setHasAccount] = useState(true);
   //   const { handleValidateInput } = useLogin();
+
+  const labels = {
+    email: "Email",
+    pwd: "Password",
+    account: "Account Name",
+  };
 
   return (
     <form
@@ -21,13 +23,21 @@ export const LoginForm: React.FC = () => {
         console.log(e);
       }}
     >
-      <h2>{hasAccount ? "Log in" : "Sign up"}</h2>
+      <h2>{action}</h2>
+      {action === "Sign up" ? (
+        <div>
+          <label htmlFor="account-name">{labels.account}</label>
+          <input type="text" name="account" id="account" />
+        </div>
+      ) : (
+        <></>
+      )}
       <div>
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">{labels.email}</label>
         <input type="email" name="email" id="email" />
       </div>
       <div>
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">{labels.pwd}</label>
         <input type={pwdIsVisible ? "text" : "password"} name="pwd" id="pwd" />
         <IconButton
           size="medium"
@@ -41,10 +51,8 @@ export const LoginForm: React.FC = () => {
           )}
         </IconButton>
       </div>
-      <button className={classes.btn}>
-        {hasAccount ? "Log in" : "Sign up"}
-      </button>
-      {hasAccount ? (
+      <button className={classes.btn}>{action}</button>
+      {action === "Log in" ? (
         <button className={classes.forgetPwdBtn}>Forget password?</button>
       ) : (
         <></>

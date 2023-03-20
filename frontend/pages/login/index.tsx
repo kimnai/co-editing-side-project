@@ -3,10 +3,10 @@ import { LayoutPublic } from "../../components/layout/LayoutPuplic";
 import { LoginForm } from "../../components/login/LoginForm";
 
 const Login = () => {
-  return <LoginForm />;
+  return <LoginForm action="Log in" />;
 };
 
-Login.getLayout = (page: NextPage) => {
+Login.getLayout = (page: NextPage): JSX.Element => {
   return <LayoutPublic>{page}</LayoutPublic>;
 };
 

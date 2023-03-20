@@ -1,0 +1,11 @@
+.tab-btn {
+  padding: 1rem 1.5rem;
+  display: flex;
+}
+.tab-btn:hover {
+  filter: brightness(0.8);
+}
+
+.tab-btn > *:not(:last-child) {
+  margin-right: 0.5rem;
+}

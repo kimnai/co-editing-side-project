@@ -1,0 +1,19 @@
+label {
+  font-size: smaller;
+  margin-bottom: 0.2rem;
+}
+
+input {
+  background-color: var(--bg-rg);
+  border: 1px solid var(--border-rg);
+  padding: 1rem;
+}
+
+.form input .error {
+  background-color: var(--error-bg);
+  border-color: var(--error-border);
+}
+
+.form input:focus {
+  border-color: var(--input-focus);
+}

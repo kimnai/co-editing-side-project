@@ -1,0 +1,90 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 35rem;
+  height: 40rem;
+  margin: 3rem;
+
+  color: var(--font-rg);
+  padding: 3rem;
+  border: 1px solid var(--border-rg);
+  box-shadow: 0 5px 5px 5px var(--border-rg);
+  border-radius: var(--border-ra-rg);
+}
+
+.form > * {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--border-ra-rg);
+}
+
+.form > *:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.form h2 {
+  font-size: 3rem;
+  text-align: center;
+  color: black;
+}
+
+.form div {
+  position: relative;
+}
+
+.form label {
+  font-size: smaller;
+  margin-bottom: 0.2rem;
+}
+
+.form input {
+  background-color: var(--bg-rg);
+  border: 1px solid var(--border-rg);
+  padding: 1rem;
+}
+
+.form input .error {
+  background-color: var(--error-bg);
+  border-color: var(--error-border);
+}
+
+.form input:focus {
+  border-color: var(--input-focus);
+}
+
+.form .iconBtn {
+  position: absolute;
+
+  right: 0.2rem;
+  top: 2.2rem;
+  background: none;
+  border: none;
+}
+
+.form button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--btn-bg);
+}
+
+.form .btn {
+  border: 1px solid var(--border-rg);
+  padding: 0.5rem;
+  margin-top: 1.6rem;
+}
+
+.forgetPwdBtn {
+  border: none;
+  text-decoration: underline;
+  color: var(--font-rg);
+}
+
+.forgetPwdBtn:hover {
+  color: var(--font-dark);
+}
+
+.form button .error {
+  background-color: var(--error-bg);
+  border-color: var(--error-border);
+}

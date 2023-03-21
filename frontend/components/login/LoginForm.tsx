@@ -1,19 +1,12 @@
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import classes from "@style/Login.module.css";
+import { InputField } from "./InputField";
+import { useLogin } from "@hooks/useLogin";
 
 export const LoginForm: React.FC<{ action: "Log in" | "Sign up" }> = ({
   action,
 }): JSX.Element => {
-  const [pwdIsVisible, setPwdIsVisible] = useState(false);
-  //   const { handleValidateInput } = useLogin();
-
-  const labels = {
-    email: "Email",
-    pwd: "Password",
-    account: "Account Name",
-  };
+  const { dispatch, state } = useLogin();
 
   return (
     <form
@@ -25,32 +18,12 @@ export const LoginForm: React.FC<{ action: "Log in" | "Sign up" }> = ({
     >
       <h2>{action}</h2>
       {action === "Sign up" ? (
-        <div>
-          <label htmlFor="account-name">{labels.account}</label>
-          <input type="text" name="account" id="account" />
-        </div>
+        <InputField inputType="account" state={state} dispatch={dispatch} />
       ) : (
         <></>
       )}
-      <div>
-        <label htmlFor="email">{labels.email}</label>
-        <input type="email" name="email" id="email" />
-      </div>
-      <div>
-        <label htmlFor="password">{labels.pwd}</label>
-        <input type={pwdIsVisible ? "text" : "password"} name="pwd" id="pwd" />
-        <IconButton
-          size="medium"
-          onClick={() => setPwdIsVisible((prev) => !prev)}
-          className={classes.iconBtn}
-        >
-          {pwdIsVisible ? (
-            <VisibilityOff fontSize="small" />
-          ) : (
-            <Visibility fontSize="small" />
-          )}
-        </IconButton>
-      </div>
+      <InputField inputType="email" state={state} dispatch={dispatch} />
+      <InputField inputType="pwd" state={state} dispatch={dispatch} />
       <button className={classes.btn}>{action}</button>
       {action === "Log in" ? (
         <button className={classes.forgetPwdBtn}>Forget password?</button>

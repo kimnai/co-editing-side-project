@@ -6,7 +6,7 @@ const Login = () => {
   return <LoginForm action="Log in" />;
 };
 
-Login.getLayout = (page: NextPage): JSX.Element => {
+Login.getLayout = (page: JSX.Element): JSX.Element => {
   return <LayoutPublic>{page}</LayoutPublic>;
 };
 

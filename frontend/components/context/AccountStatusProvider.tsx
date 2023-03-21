@@ -21,7 +21,7 @@ export const AccountStatusProvider: React.FC = (
   props: PropsWithChildren
 ): JSX.Element => {
   const [isLoggedIn, setIsLoggedin] = useState(false);
-  const { setEmail, setPwd } = useLogin();
+  const { state, dispatch } = useLogin();
 
   return (
     <AccountStatusContext.Provider value={{ isLoggedIn }}>

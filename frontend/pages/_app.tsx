@@ -2,7 +2,8 @@ import "../styles/globals.css";
 import React from "react";
 import type { AppProps } from "next/app";
 import { NextPage } from "next";
-import { AsideStatusProvider } from "../components/context/AsideStatusProvider";
+import { AsideStatusProvider } from "components/context/AsideStatusProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 type ComponentWithLayout = {
   getLayout: (page: JSX.Element) => JSX.Element;
@@ -19,11 +20,15 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       page;
     });
 
+  const queryClient = new QueryClient();
+
   return (
-    <div>
-      <AsideStatusProvider>
-        {getLayout(<Component {...pageProps} />)}
-      </AsideStatusProvider>
-    </div>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <AsideStatusProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </AsideStatusProvider>
+      </QueryClientProvider>
+    </>
   );
 }

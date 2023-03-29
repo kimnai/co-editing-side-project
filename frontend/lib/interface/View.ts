@@ -10,3 +10,5 @@ export interface Properties {
   content: string;
   assignee: string;
 }
+
+

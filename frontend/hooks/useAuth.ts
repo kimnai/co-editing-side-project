@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-// import { ActionType } from "@lib/enum/Auth";
-// import { Action, LoginData, SignUpData } from "@lib/interface/Login";
+import { ActionType } from "lib/enum/Auth";
+import { Action, LoginData, SignUpData } from "lib/interface/Login";
 import { ReducerAction, ReducerState, useReducer, useState } from "react";
 
 const handleLogin = async () => {
@@ -12,37 +12,36 @@ const handleLogin = async () => {
   }
 };
 
-// const initialState: SignUpData | LoginData = {
-//   account: "",
-//   email: "",
-//   pwd: "",
-// };
+const initialState: SignUpData | LoginData = {
+  account: "",
+  email: "",
+  pwd: "",
+};
 
-// const reducer = (action: Action, state: SignUpData | LoginData) => {
-//   switch (action.type) {
-//     case ActionType.EDIT_ACCOUNT: {
-//       return { ...state, account: action.payload };
-//     }
-//     case ActionType.EDIT_EMAIL: {
-//       return { ...state, email: action.payload };
-//     }
+const reducer = (action: Action, state: SignUpData | LoginData) => {
+  switch (action.type) {
+    case ActionType.EDIT_ACCOUNT: {
+      return { ...state, account: action.payload };
+    }
+    case ActionType.EDIT_EMAIL: {
+      return { ...state, email: action.payload };
+    }
 
-//     case ActionType.EDIT_PWD: {
-//       return { ...state, pwd: action.payload };
-//     }
-//     default:
-//       return state;
-//   }
-// };
+    case ActionType.EDIT_PWD: {
+      return { ...state, pwd: action.payload };
+    }
+    default:
+      return state;
+  }
+};
 
 export const useAuth = () => {
   const [email, setEmail] = useState("");
-  // const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [state, dispatch] = useReducer(reducer, initialState);
   const mutation = useMutation({
     mutationKey: ["login"],
     mutationFn: handleLogin,
   });
 
-  return {};
+  return { state, dispatch };
 };

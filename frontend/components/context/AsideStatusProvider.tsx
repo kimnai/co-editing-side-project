@@ -12,7 +12,7 @@ const defaultCtx: {
 
 export const AsideCtx = createContext(defaultCtx);
 
-export const AsideStatusProvider = (props) => {
+export const AsideStatusProvider = (props: any) => {
   const [status, setStatus] = useState<AsideStatus>("open");
 
   const handleClick = () => {

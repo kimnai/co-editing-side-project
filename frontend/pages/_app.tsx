@@ -23,11 +23,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   const queryClient = new QueryClient();
 
-  console.log(process.env.GOOGLE_CLIENT_ID);
-
   return (
     <>
-      <GoogleOAuthProvider clientId="456571813861-77cc4avdv2a5gf0hib3vulsd0joauhuq.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
         <QueryClientProvider client={queryClient}>
           <AsideStatusProvider>
             {getLayout(<Component {...pageProps} />)}

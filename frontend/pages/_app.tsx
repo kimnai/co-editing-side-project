@@ -1,8 +1,8 @@
 import "../styles/globals.css";
+import React from "react";
 import type { AppProps } from "next/app";
-import { NextComponentType, NextPage, NextPageContext } from "next";
-import { JsxElement } from "typescript";
-import { AsideStatusProvider } from "components/context/AsideStatusProvider";
+import { NextPage } from "next";
+import { AsideStatusProvider } from "../components/context/AsideStatusProvider";
 
 type ComponentWithLayout = {
   getLayout: (page: JSX.Element) => JSX.Element;

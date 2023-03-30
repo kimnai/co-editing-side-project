@@ -1,4 +1,11 @@
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useState,
+} from "react";
+import React from "react";
 
 type AsideStatus = "open" | "close" | "hover";
 
@@ -12,7 +19,7 @@ const defaultCtx: {
 
 export const AsideCtx = createContext(defaultCtx);
 
-export const AsideStatusProvider = (props: any) => {
+export const AsideStatusProvider = (props: PropsWithChildren) => {
   const [status, setStatus] = useState<AsideStatus>("open");
 
   const handleClick = () => {

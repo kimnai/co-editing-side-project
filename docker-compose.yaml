@@ -17,6 +17,6 @@ services:
       - dev
     restart: on-failure
     volumes:
-      - ./frontend/:app/:ro
+      - ./frontend/:/app/:ro
       - /app/node_modules
       - /app/.next

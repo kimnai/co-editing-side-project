@@ -5,12 +5,18 @@ services:
     container_name: frontend
     image: co-editing-frontend
     build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
+      context: ./frontend/
+      dockerfile: ./docker/Dockerfile
       args:
         - ENV_FILE=${ENV_FILE}
     ports:
       - "3000:3000"
+    command:
+      - npm
+      - run
+      - dev
     restart: on-failure
     volumes:
-      - ./frontend/:app/:ro
+      - ./frontend/:/app/:ro
+      - /app/node_modules
+      - /app/.next

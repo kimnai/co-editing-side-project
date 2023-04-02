@@ -8,7 +8,7 @@ const Login = () => {
 };
 
 Login.getLayout = (page: JSX.Element): JSX.Element => {
-  return <div>{page}</div>;
+  return <LayoutPublic>{page}</LayoutPublic>;
 };
 
 export default Login;

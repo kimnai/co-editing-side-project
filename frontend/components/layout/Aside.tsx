@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 
-export const Aside: React.FC = () => {
+export const Aside = () => {
   const { status, setStatus, handleClick } = useContext(AsideCtx);
   const items = ["search", "settings"];
 

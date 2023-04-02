@@ -1,26 +1,17 @@
-import React, { useState } from "react";
-import dynamic from "next/dynamic";
+import React from "react";
+import { LayoutAuth } from "@components/layout/LayoutAuth";
 
+// const Aside = dynamic(
+//   () => import("../components/layout/Aside").then((module) => module.Aside),
+//   { loading: () => <div>loading</div> }
+// );
 
-
-const Aside = dynamic(
-  () => import("../components/layout/Aside").then((module) => module.Aside),
-  { loading: () => <div>loading</div> }
-);
-
-const Home= () => {
-  const [isVisible, setIsVisible] = useState(false);
-  return (
-    <div>
-      Welcome to home
-      <button onClick={() => setIsVisible((prev) => !prev)}>show aside</button>
-      {isVisible ? <Aside /> : <></>}
-    </div>
-  );
+const Home = () => {
+  return <div>Welcome home</div>;
 };
 
-Home.getLayout = function (page){
-  return <div>{page}</div>
-}
+Home.getLayout = function (page) {
+  return <LayoutAuth>{page}</LayoutAuth>;
+};
 
 export default Home;

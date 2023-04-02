@@ -1,6 +1,7 @@
 import { googleLogout, useGoogleOneTapLogin } from "@react-oauth/google";
 import jwt_decoded from "jwt-decode";
 import { useRouter } from "next/router";
+import { ItemKeys, useLocalStorage } from "./useLocalStorage";
 interface GoogleCredentialResponse {
   credential?: string;
 }
@@ -20,18 +21,17 @@ interface Decoded {
 
 export const useGoogleAuth = () => {
   const router = useRouter();
+  const { setItem, removeItem, getItem } = useLocalStorage();
 
   const handleSetUserData = (res: GoogleCredentialResponse) => {
-    console.log("res", res);
-
     if (!res) {
-      console.log("error");
+      console.error("error");
       return;
     }
-    const decoded: Decoded = jwt_decoded(res.credential);
-    console.log(decoded);
-
-    if (decoded) router.push("/");
+    if (res.credential) {
+      setItem(ItemKeys.oAuth_credential, res.credential);
+      router.push("/");
+    }
   };
 
   useGoogleOneTapLogin({
@@ -41,7 +41,10 @@ export const useGoogleAuth = () => {
   });
 
   const handleGoogleLogout = () => {
+    console.log("log out");
     googleLogout();
+    router.push("/login");
+    localStorage.removeItem(ItemKeys.oAuth_credential);
   };
 
   return { handleGoogleLogout, handleSetUserData };

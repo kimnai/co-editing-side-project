@@ -1,13 +1,14 @@
-import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
-import { Icon, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 import React, { useState } from "react";
 import classes from "@style/Login.module.css";
 import { useGoogleAuth } from "../../hooks/useGoogleAuth";
+import { GoogleLogin } from "@react-oauth/google";
 
-export const LoginForm: React.FC = () => {
+export const LoginForm: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
   const [hasAccount, setHasAccount] = useState(true);
-  const { handleGoogleLogin } = useGoogleAuth();
+  const { handleGoogleLogout, handleSetUserData } = useGoogleAuth();
 
   return (
     <>
@@ -50,9 +51,19 @@ export const LoginForm: React.FC = () => {
         ) : (
           <></>
         )}
-        <IconButton size="large" onClick={() => handleGoogleLogin()}>
-          <Google fontSize="inherit" />
-        </IconButton>
+
+        <div>
+          <GoogleLogin
+            type="icon"
+            theme={undefined}
+            text="continue_with"
+            logo_alignment="center"
+            useOneTap={true}
+            onSuccess={(res) => handleSetUserData(res)}
+            onError={() => console.log("errpr")}
+            cancel_on_tap_outside={false}
+          />
+        </div>
       </form>
     </>
   );

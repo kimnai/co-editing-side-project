@@ -1,27 +1,48 @@
-import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import { googleLogout, useGoogleOneTapLogin } from "@react-oauth/google";
+import jwt_decoded from "jwt-decode";
+import { useRouter } from "next/router";
+interface GoogleCredentialResponse {
+  credential?: string;
+}
 
-interface GoogleTokenResponse {
-  access_token: string;
-  expires_in: number;
-  token_type: string;
+interface Decoded {
+  email: string;
+  email_verified: boolean;
+  exp: number;
+  family_name: string;
+  given_name: string;
+  name: string;
+  iat: number;
+  jti: string;
+  nbf: number;
+  picture: string;
 }
 
 export const useGoogleAuth = () => {
-  const handleSetUserData = (res: GoogleTokenResponse) => {
-    console.log(res);
-    const { expires_in, access_token, token_type } = res;
+  const router = useRouter();
+
+  const handleSetUserData = (res: GoogleCredentialResponse) => {
+    console.log("res", res);
+
+    if (!res) {
+      console.log("error");
+      return;
+    }
+    const decoded: Decoded = jwt_decoded(res.credential);
+    console.log(decoded);
+
+    if (decoded) router.push("/");
   };
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: (res) => handleSetUserData(res),
-    onError: (res) => {
-      console.log(res);
-    },
+  useGoogleOneTapLogin({
+    onSuccess: (res: GoogleCredentialResponse) => handleSetUserData(res),
+    onError: () => console.log("error"),
+    cancel_on_tap_outside: false,
   });
 
   const handleGoogleLogout = () => {
     googleLogout();
   };
 
-  return { handleGoogleLogin, handleGoogleLogout };
+  return { handleGoogleLogout, handleSetUserData };
 };

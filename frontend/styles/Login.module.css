@@ -30,6 +30,8 @@
 
 .form div {
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .form label {

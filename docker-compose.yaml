@@ -1,6 +1,15 @@
 version: "3.9"
 
 services:
+  backend:
+    container_name: backend
+    image: co-editing-backend
+    build:
+      context: ./backend/
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "4000:8080"
+    restart: on-failure
   frontend:
     container_name: frontend
     image: co-editing-frontend

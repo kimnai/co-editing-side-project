@@ -1,0 +1,10 @@
+__tests__
+
+**/node_modules/
+.next/
+coverage/
+docker/
+.git
+.swc
+README.md
+*.tsbuildinfo

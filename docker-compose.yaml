@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   backend:
-    container_name: backend
+    container_name: co-editing_backend
     image: co-editing-backend
     build:
       context: ./backend/
@@ -11,7 +11,7 @@ services:
       - "4000:8080"
     restart: on-failure
   frontend:
-    container_name: frontend
+    container_name: co-editing_frontend
     image: co-editing-frontend
     build:
       context: ./frontend/
@@ -19,11 +19,12 @@ services:
       args:
         - ENV_FILE=${ENV_FILE}
     ports:
-      - "3000:3000"
+      - "3001:3001"
     command:
       - npm
       - run
       - dev
+      - -- -p 3001
     restart: on-failure
     volumes:
       - ./frontend/:/app/:ro

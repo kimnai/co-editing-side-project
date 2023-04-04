@@ -16,8 +16,6 @@ services:
     build:
       context: ./frontend/
       dockerfile: ./docker/Dockerfile
-      args:
-        - ENV_FILE=${ENV_FILE}
     ports:
       - "3001:3001"
     command: ["npm", "run", "dev", "--", "-p", "3001"]

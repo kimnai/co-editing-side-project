@@ -7,8 +7,13 @@ services:
     build:
       context: ./backend/
       dockerfile: ./docker/Dockerfile
+    environment:
+      DATABASE_HOST_NAME: co-editing_database
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "4000:8080"
+    depends_on: 
+      - postgres
     restart: on-failure
   frontend:
     container_name: co-editing_frontend
@@ -24,3 +29,17 @@ services:
       - ./frontend/:/app/:ro
       - /app/node_modules
       - /app/.next
+  postgres:
+    container_name: co-editing_database
+    image: postgres:15.2
+    restart: on-failure
+    volumes:
+      - test-data:/var/lib/postgressql
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+  
+volumes:
+  test-data:
+

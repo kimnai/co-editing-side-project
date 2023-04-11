@@ -3,26 +3,28 @@ export interface Tokens {
   refresh_token: string;
 }
 
-export interface UserState {
-  isLoggedIn: boolean;
-  isGoogleLogin: boolean;
-  userInfo: {
-    email: string;
-    password: string;
-    username: string;
-  };
-  tokens?: {
-    exp: number;
-    isExp: boolean;
-  };
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
-}
-
 export interface LoginData {
   email: string;
-  pwd: string;
+  password: string;
 }
 
 export interface SignUpData extends LoginData {
-  account: string;
+  username: string;
+}
+
+export interface UserInfo extends Omit<SignUpData, "password"> {
+  picture: string;
+}
+export interface TokenInfo {
+  isExpired?: boolean;
+}
+
+export interface UserState {
+  isLoggedIn: boolean;
+  isGoogleLogin: boolean;
+  userInfo: UserInfo;
+  tokenInfo: TokenInfo | null;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setUserInfo: (info: UserInfo) => void;
+  setTokenInfo: (info: TokenInfo) => void;
 }

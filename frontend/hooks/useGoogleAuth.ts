@@ -1,12 +1,15 @@
-import { googleLogout, useGoogleOneTapLogin } from "@react-oauth/google";
-import jwt_decoded from "jwt-decode";
+import {
+  GoogleCredentialResponse,
+  googleLogout,
+  useGoogleOneTapLogin,
+} from "@react-oauth/google";
 import { useRouter } from "next/router";
-import { ItemKeys, useLocalStorage } from "./useLocalStorage";
-interface GoogleCredentialResponse {
-  credential?: string;
-}
+import { ItemKeys } from "../lib/utility/useLocalStorage";
+import { setItem, removeItem } from "../lib/utility/useLocalStorage";
+import { useUserAuthStore } from "store/useUserAuthStore";
+import { decode } from "jsonwebtoken";
 
-interface Decoded {
+export interface DecodedGoogleCredential {
   email: string;
   email_verified: boolean;
   exp: number;
@@ -21,31 +24,36 @@ interface Decoded {
 
 export const useGoogleAuth = () => {
   const router = useRouter();
-  const { setItem, removeItem, getItem } = useLocalStorage();
+  const { setIsLoggedIn, setTokenInfo, setUserInfo } = useUserAuthStore();
 
-  const handleSetUserData = (res: GoogleCredentialResponse) => {
+  const handleGoogleLogin = (res: GoogleCredentialResponse) => {
     if (!res) {
       console.error("error");
       return;
     }
     if (res.credential) {
       setItem(ItemKeys.oAuth_credential, res.credential);
+      const { email, name, picture, exp } = decode(
+        res.credential
+      ) as DecodedGoogleCredential;
+      setIsLoggedIn(true);
+      setUserInfo({ username: name, email: email, picture: picture });
+      setTokenInfo({ isExpired: Date.now() > exp });
       router.push("/");
     }
   };
 
   useGoogleOneTapLogin({
-    onSuccess: (res: GoogleCredentialResponse) => handleSetUserData(res),
+    onSuccess: (res: GoogleCredentialResponse) => handleGoogleLogin(res),
     onError: () => console.log("error"),
     cancel_on_tap_outside: false,
   });
 
   const handleGoogleLogout = () => {
-    console.log("log out");
     googleLogout();
     router.push("/login");
-    localStorage.removeItem(ItemKeys.oAuth_credential);
+    removeItem(ItemKeys.oAuth_credential);
   };
 
-  return { handleGoogleLogout, handleSetUserData };
+  return { handleGoogleLogout, handleGoogleLogin };
 };

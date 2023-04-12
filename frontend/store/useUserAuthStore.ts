@@ -1,19 +1,17 @@
-import { TokenInfo, UserInfo, UserState } from "@lib/interface/Auth";
+import { UserInfo, UserState } from "@lib/interface/Auth";
 import { create } from "zustand";
 
 export const useUserAuthStore = create<UserState>((set) => ({
-  isGoogleLogin: false,
-  isLoggedIn: false,
+  loginInfo: {
+    isGoogleLogin: false,
+    isLoggedIn: false,
+  },
   userInfo: {
     email: "",
     username: "",
     picture: "",
   },
-  tokenInfo: null,
-  setIsLoggedIn: (isLoggedIn) => set((state) => ({ isLoggedIn: isLoggedIn })),
+  setLoginInfo: (info: UserState["loginInfo"]) =>
+    set((state) => ({ loginInfo: info })),
   setUserInfo: (info: UserInfo) => set((state) => ({ userInfo: info })),
-  setTokenInfo: (info: TokenInfo) =>
-    set((state) => ({
-      tokenInfo: info,
-    })),
 }));

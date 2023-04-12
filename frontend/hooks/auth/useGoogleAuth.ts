@@ -4,8 +4,8 @@ import {
   useGoogleOneTapLogin,
 } from "@react-oauth/google";
 import { useRouter } from "next/router";
-import { ItemKeys } from "../lib/utility/useLocalStorage";
-import { setItem, removeItem } from "../lib/utility/useLocalStorage";
+import { ItemKeys } from "../../lib/utility/useLocalStorage";
+import { setItem, removeItem } from "../../lib/utility/useLocalStorage";
 import { useUserAuthStore } from "store/useUserAuthStore";
 import { decode } from "jsonwebtoken";
 
@@ -24,7 +24,7 @@ export interface DecodedGoogleCredential {
 
 export const useGoogleAuth = () => {
   const router = useRouter();
-  const { setIsLoggedIn, setTokenInfo, setUserInfo } = useUserAuthStore();
+  const { setLoginInfo, setTokenInfo, setUserInfo } = useUserAuthStore();
 
   const handleGoogleLogin = (res: GoogleCredentialResponse) => {
     if (!res) {
@@ -36,7 +36,9 @@ export const useGoogleAuth = () => {
       const { email, name, picture, exp } = decode(
         res.credential
       ) as DecodedGoogleCredential;
-      setIsLoggedIn(true);
+
+      setLoginInfo({ isLoggedIn: true, isGoogleLogin: true });
+
       setUserInfo({ username: name, email: email, picture: picture });
       setTokenInfo({ isExpired: Date.now() > exp });
       router.push("/");

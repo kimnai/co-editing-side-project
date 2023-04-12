@@ -13,18 +13,15 @@ export interface SignUpData extends LoginData {
 }
 
 export interface UserInfo extends Omit<SignUpData, "password"> {
-  picture: string;
-}
-export interface TokenInfo {
-  isExpired?: boolean;
+  picture?: string;
 }
 
 export interface UserState {
-  isLoggedIn: boolean;
-  isGoogleLogin: boolean;
+  loginInfo: {
+    isLoggedIn: boolean;
+    isGoogleLogin: boolean;
+  };
   userInfo: UserInfo;
-  tokenInfo: TokenInfo | null;
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setLoginInfo: (info: UserState["loginInfo"]) => void;
   setUserInfo: (info: UserInfo) => void;
-  setTokenInfo: (info: TokenInfo) => void;
 }

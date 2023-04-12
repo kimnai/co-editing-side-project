@@ -26,8 +26,8 @@ instance.interceptors.request.use(
 export const axiosReq = (
   method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH",
   url: string,
-  data = null,
-  config
+  data?: unknown | undefined,
+  config?: any | undefined
 ) => {
   switch (method) {
     case "GET": {

@@ -5,6 +5,7 @@ import { NextPage } from "next";
 import { AsideStatusProvider } from "@components/context/AsideStatusProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import "mocks";
 
 type ComponentWithLayout = {
   getLayout: (page: JSX.Element) => JSX.Element;

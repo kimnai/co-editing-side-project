@@ -1,9 +1,12 @@
 import axios from "axios";
 import { getItem } from "@lib/utility/useLocalStorage";
 import { Tokens } from "@lib/interface/Auth";
+import { API_USER } from "@lib/api/Auth";
+
+const baseUrl = "http://co-editing_backend:8080/";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3001/",
+  baseURL: baseUrl,
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,6 +15,11 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    if (
+      config.url === `${API_USER.LOGIN}` ||
+      config.url === `${API_USER.SIGNUP}`
+    )
+      return config;
     const tokens = getItem("tokens");
     //rotate token if expires
     const { access_token } = tokens as Tokens;

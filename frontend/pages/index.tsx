@@ -1,4 +1,6 @@
 import React from "react";
+import { LoginForm } from "@components/login/LoginForm";
+import { useRouter } from "next/router";
 import { LayoutAuth } from "@components/layout/LayoutAuth";
 
 // const Aside = dynamic(
@@ -7,7 +9,10 @@ import { LayoutAuth } from "@components/layout/LayoutAuth";
 // );
 
 const Home = () => {
-  return <div>Welcome home</div>;
+  // const { isLoggedIn } = useUserAuthStore();
+  // const router = useRouter();
+  // if (!isLoggedIn) router.push("/user/login");
+  return <>Welcome home</>;
 };
 
 Home.getLayout = function (page) {

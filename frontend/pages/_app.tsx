@@ -6,10 +6,10 @@ import { AsideStatusProvider } from "@components/context/AsideStatusProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-if (process.env.NODE_ENV === "development") {
-  const { server } = require("mocks/server");
-  server.start();
-}
+// if (process.env.NODE_ENV === "development") {
+//   const { worker } = require("mocks/browser");
+//   worker.start();
+// }
 
 type ComponentWithLayout = {
   getLayout: (page: JSX.Element) => JSX.Element;

@@ -1,10 +1,9 @@
-import { NextPage } from "next";
 import { LayoutPublic } from "../../components/layout/LayoutPuplic";
 import { LoginForm } from "../../components/login/LoginForm";
-import React, { PropsWithChildren } from "react";
+import React from "react";
 
 const Login = () => {
-  return <LoginForm />;
+  return <LoginForm action="login" />;
 };
 
 Login.getLayout = (page: JSX.Element): JSX.Element => {

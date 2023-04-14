@@ -2,7 +2,7 @@ export enum ItemKeys {
   oAuth_credential = "oAuth_credential",
 }
 
-export const getItem = (key: string): unknown | null => {
+export const getItem = (key: string): object | string | null => {
   const item = localStorage.getItem(key);
   if (!item) return null;
   return JSON.parse(item);

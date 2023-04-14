@@ -1,11 +1,11 @@
 import { API_USER } from "@lib/api/Auth";
 import { LoginData, SignUpData, Tokens } from "@lib/interface/Auth";
-import { axiosReq } from "api";
-import { useRouter } from "next/router";
+import { axiosInstance } from "api";
+// import { useRouter } from "next/router";
 import { FormEvent, useReducer } from "react";
 import { useUserAuthStore } from "store/useUserAuthStore";
 import { decode } from "jsonwebtoken";
-import { setItem } from "@lib/utility/useLocalStorage";
+import { removeItem, setItem } from "@lib/utility/useLocalStorage";
 
 type FormState = {
   [k in keyof LoginData]: {
@@ -50,15 +50,15 @@ const reducer = (state: FormState, action: Action) => {
     return state;
   const value = action.payload;
   switch (action.type) {
-    case "SET_EMAIL": {
+    case "SET_EMAIL":
       return { ...state, email: { value: value, isValid: false } };
-    }
-    case "SET_USER_NAME": {
+
+    case "SET_USER_NAME":
       return { ...state, username: { value: value, isValid: false } };
-    }
-    case "SET_PASSWORD": {
+
+    case "SET_PASSWORD":
       return { ...state, password: { value: value, isValid: false } };
-    }
+
     case "VALIDATE": {
       const email = state.email.value;
       const password = state.password.value;
@@ -107,34 +107,26 @@ const reducer = (state: FormState, action: Action) => {
 
 export const useAuth = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { setLoginInfo, setUserInfo } = useUserAuthStore();
+  const { setLoginInfo, setUserInfo, resetAll } = useUserAuthStore();
+  // const router = useRouter();
 
   const handleValidation = (action: "login" | "signup"): boolean => {
-    let formIsValid = false;
-
-    formIsValid = Object.entries(state).every(([p, v]) => {
-      if (action === "login") return p !== "username" && v.isValid;
-      else return v.isValid;
-    });
-
-    return formIsValid;
+    dispatch({ type: "VALIDATE" });
+    return Object.entries(state).every(([p, v]) => v.isValid);
   };
 
   const handleSubmitForm = async (action: "login" | "signup") => {
     const formIsValid = handleValidation(action);
     if (!formIsValid) return false;
-    let body: object = {};
 
-    const base = { email: state.email, password: state.password };
+    let body = { email: state.email.value, password: state.password.value };
     if (action === "signup")
-      body = Object.assign({ username: state.username }, base);
-
+      body = Object.assign(body, { username: state.username?.value });
     try {
-      const res = await axiosReq("POST", API_USER.LOGIN, body);
+      const res = await axiosInstance.post(API_USER.LOGIN, body);
       if (!res) throw new Error(`Error occured`);
 
       const { data } = res;
-
       if (data.access_token) {
         const decoded = decode(data.access_token);
 
@@ -150,9 +142,15 @@ export const useAuth = () => {
         );
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
-  return { handleSubmitForm, dispatch, state };
+  const handleLogout = () => {
+    resetAll();
+    removeItem("tokens");
+    router.push("/login");
+  };
+
+  return { handleSubmitForm, dispatch, state, handleLogout };
 };

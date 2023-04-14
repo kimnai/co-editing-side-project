@@ -24,4 +24,5 @@ export interface UserState {
   userInfo: UserInfo;
   setLoginInfo: (info: UserState["loginInfo"]) => void;
   setUserInfo: (info: UserInfo) => void;
+  resetAll: () => void;
 }

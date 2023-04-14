@@ -5,15 +5,15 @@ import { API_USER } from "@lib/api/Auth";
 
 const baseUrl = "http://co-editing_backend:8080/";
 
-const instance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: baseUrl,
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000,
+  timeout: 3000000,
 });
 
-instance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     if (
       config.url === `${API_USER.LOGIN}` ||
@@ -27,35 +27,6 @@ instance.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
+    return Promise.reject(`Axios ${error}`);
   }
 );
-
-export const axiosReq = (
-  method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH",
-  url: string,
-  data?: unknown | undefined,
-  config?: any | undefined
-) => {
-  switch (method) {
-    case "GET": {
-      return instance.get(url, { params: data });
-    }
-    case "POST": {
-      return instance.post(url, data, config);
-    }
-    case "PATCH": {
-      return instance.patch(url, data);
-    }
-    case "PUT": {
-      return instance.put(url, data);
-    }
-    case "DELETE": {
-      return instance.delete(url, { params: data });
-    }
-    default: {
-      console.error("Unknown method");
-      return false;
-    }
-  }
-};

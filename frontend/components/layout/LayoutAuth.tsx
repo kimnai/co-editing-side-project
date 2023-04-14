@@ -1,10 +1,12 @@
 import React, { PropsWithChildren } from "react";
 import classes from "@style/Layout.module.css";
-import { useGoogleAuth } from "@hooks/useGoogleAuth";
+import { useGoogleAuth } from "@hooks/auth/useGoogleAuth";
 import { Aside } from "./Aside";
+import { useVerifyToken } from "@hooks/auth/useVerifyToken";
 
 export const LayoutAuth = (props: PropsWithChildren) => {
   const { handleGoogleLogout } = useGoogleAuth();
+  useVerifyToken();
 
   return (
     <div className={classes.container}>

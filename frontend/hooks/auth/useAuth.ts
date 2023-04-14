@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { FormEvent, useReducer } from "react";
 import { useUserAuthStore } from "store/useUserAuthStore";
 import { decode } from "jsonwebtoken";
-import { removeItem, setItem } from "@lib/utility/useLocalStorage";
+import { useLocalStorage } from "@hooks/utility/useLocalStorage";
 
 type FormState = {
   [k in keyof LoginData]: {
@@ -106,6 +106,7 @@ const reducer = (state: FormState, action: Action) => {
 };
 
 export const useAuth = () => {
+  const { getItem, setItem, removeItem } = useLocalStorage();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setLoginInfo, setUserInfo, resetAll } = useUserAuthStore();
   const router = useRouter();
@@ -152,7 +153,7 @@ export const useAuth = () => {
   const handleLogout = () => {
     resetAll();
     removeItem("tokens");
-    router.push("/login");
+    router.push("/user/login");
   };
 
   return { handleSubmitForm, dispatch, state, handleLogout };

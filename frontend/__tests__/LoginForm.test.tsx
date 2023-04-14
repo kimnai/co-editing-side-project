@@ -11,7 +11,7 @@ import { useUserAuthStore } from "store/useUserAuthStore";
 import { useVerifyToken } from "@hooks/auth/useVerifyToken";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Home from "pages";
-import { getItem } from "@lib/utility/useLocalStorage";
+import { useLocalStorage } from "@hooks/utility/useLocalStorage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +21,8 @@ const wrapper = ({ children }) => {
   );
 };
 
+const { result } = renderHook(() => useLocalStorage());
+const { getItem, setItem } = result.current;
 //test case 1
 // test("Form validation", () => {
 //   const { result } = renderHook(() => useAuth());

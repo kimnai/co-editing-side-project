@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getItem } from "@lib/utility/useLocalStorage";
 import { Tokens } from "@lib/interface/Auth";
 import { API_USER } from "@lib/api/Auth";
 
@@ -20,7 +19,8 @@ axiosInstance.interceptors.request.use(
       config.url === `${API_USER.SIGNUP}`
     )
       return config;
-    const tokens = getItem("tokens");
+    const tokens = localStorage.getItem("tokens");
+    if (tokens === null) return config;
     //rotate token if expires
     const { access_token } = tokens as Tokens;
     config.headers.Authorization = `Bearer ${access_token}`;

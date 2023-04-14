@@ -1,18 +1,19 @@
 import { API_USER } from "@lib/api/Auth";
 import { Tokens } from "@lib/interface/Auth";
-import { getItem, removeItem, setItem } from "@lib/utility/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "api";
 import { decode } from "jsonwebtoken";
 import { useRouter } from "next/router";
 import { useUserAuthStore } from "store/useUserAuthStore";
 import { useAuth } from "./useAuth";
+import { useLocalStorage } from "@hooks/utility/useLocalStorage";
 
 export const useVerifyToken = () => {
   const isBrowser = typeof window !== undefined;
   if (!isBrowser) return;
   const { resetAll, setLoginInfo } = useUserAuthStore();
   const router = useRouter();
+  const { getItem, setItem, removeItem } = useLocalStorage();
   const tokens: Tokens | null = getItem("tokens");
   const { handleLogout } = useAuth();
 

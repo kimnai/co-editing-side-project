@@ -2,13 +2,13 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import React, { useState } from "react";
 import classes from "@style/Login.module.css";
-import { useGoogleAuth } from "../../hooks/useGoogleAuth";
 import { GoogleLogin } from "@react-oauth/google";
+import { useAuth } from "@hooks/auth/useAuth";
 
 export const LoginForm: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
   const [hasAccount, setHasAccount] = useState(true);
-  const { handleGoogleLogout, handleSetUserData } = useGoogleAuth();
+  const { dispatch, state, handleSubmitForm } = useAuth();
 
   return (
     <>
@@ -16,7 +16,7 @@ export const LoginForm: React.FC = (): JSX.Element => {
         className={classes.form}
         onSubmit={(e) => {
           e.preventDefault();
-          console.log(e);
+          handleSubmitForm("login");
         }}
       >
         <h2>{hasAccount ? "Log in" : "Sign up"}</h2>
@@ -43,8 +43,8 @@ export const LoginForm: React.FC = (): JSX.Element => {
             )}
           </IconButton>
         </div>
-        <button className={classes.btn}>
-          {hasAccount ? "Log in" : "Sign up"}
+        <button className={classes.btn} aria-label="submit-button">
+          {hasAccount ? "Login" : "Signup"}
         </button>
         {hasAccount ? (
           <button className={classes.forgetPwdBtn}>Forget password?</button>

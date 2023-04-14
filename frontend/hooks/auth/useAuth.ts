@@ -1,7 +1,7 @@
 import { API_USER } from "@lib/api/Auth";
 import { LoginData, SignUpData, Tokens } from "@lib/interface/Auth";
 import { axiosInstance } from "api";
-// import { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { FormEvent, useReducer } from "react";
 import { useUserAuthStore } from "store/useUserAuthStore";
 import { decode } from "jsonwebtoken";
@@ -108,7 +108,7 @@ const reducer = (state: FormState, action: Action) => {
 export const useAuth = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setLoginInfo, setUserInfo, resetAll } = useUserAuthStore();
-  // const router = useRouter();
+  const router = useRouter();
 
   const handleValidation = (action: "login" | "signup"): boolean => {
     dispatch({ type: "VALIDATE" });
@@ -123,7 +123,10 @@ export const useAuth = () => {
     if (action === "signup")
       body = Object.assign(body, { username: state.username?.value });
     try {
-      const res = await axiosInstance.post(API_USER.LOGIN, body);
+      const res = await axiosInstance.post(
+        action === "login" ? API_USER.LOGIN : API_USER.SIGNUP,
+        body
+      );
       if (!res) throw new Error(`Error occured`);
 
       const { data } = res;

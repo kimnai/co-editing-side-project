@@ -1,7 +1,3 @@
-export enum ItemKeys {
-  oAuth_credential = "oAuth_credential",
-}
-
 export const useLocalStorage = () => {
   if (typeof window === undefined) return;
 

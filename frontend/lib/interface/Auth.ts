@@ -1,3 +1,5 @@
+import { LOGIN_SOURCE } from "@lib/type/Auth";
+
 export interface Tokens {
   access_token: string;
   refresh_token: string;
@@ -11,8 +13,8 @@ export interface DecodedAccessToken {
 
 export interface LoginData {
   email: string;
-  password: string;
-  source: "google" | "first_party";
+  password?: string;
+  source: LOGIN_SOURCE;
 }
 
 export interface SignUpData extends Omit<LoginData, "source"> {

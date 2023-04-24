@@ -8,6 +8,8 @@ import { useLocalStorage } from "@hooks/utility/useLocalStorage";
 import { useUserAuthStore } from "store/useUserAuthStore";
 import { decode } from "jsonwebtoken";
 import { useAuth } from "./useAuth";
+import { axiosInstance } from "api";
+import { API_USER } from "@lib/api/Auth";
 
 export interface DecodedGoogleCredential {
   email: string;
@@ -23,24 +25,27 @@ export interface DecodedGoogleCredential {
 }
 
 export const useGoogleAuth = () => {
-  const router = useRouter();
-  const { handleLogout } = useAuth();
-  const { setLoginInfo, setUserInfo } = useUserAuthStore();
-  const { setItem, getItem, removeItem } = useLocalStorage();
-  const handleGoogleLogin = (res: GoogleCredentialResponse) => {
+  const { handleLogout, handleLoginResponse } = useAuth();
+  const { loginInfo } = useUserAuthStore();
+
+  const handleGoogleLogin = async (res: GoogleCredentialResponse) => {
     if (!res) {
       console.error("error");
       return;
     }
-    if (res.credential) {
-      setItem("tokens", { credential: res.credential });
-      const { email, name, picture, exp } = decode(
-        res.credential
-      ) as DecodedGoogleCredential;
+    try {
+      if (!res.credential) return;
+      const { email } = decode(res.credential) as DecodedGoogleCredential;
 
-      setLoginInfo({ isLoggedIn: true, isGoogleLogin: true });
-      setUserInfo({ username: name, email: email, picture: picture });
-      router.push("/");
+      //TODO: should remove comment once BE API is established
+      // const response = await axiosInstance.post(`${API_USER.LOGIN}`, {
+      //   email: email,
+      //   source: "google",
+      // });
+
+      // handleLoginResponse(response, "google");
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -48,6 +53,7 @@ export const useGoogleAuth = () => {
     onSuccess: (res: GoogleCredentialResponse) => handleGoogleLogin(res),
     onError: () => console.log("error"),
     cancel_on_tap_outside: false,
+    disabled: loginInfo.isLoggedIn,
   });
 
   const handleGoogleLogout = () => {

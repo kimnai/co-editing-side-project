@@ -2,7 +2,7 @@ import axios from "axios";
 import { Tokens } from "@lib/interface/Auth";
 import { API_USER } from "@lib/api/Auth";
 
-const baseUrl = "http://co-editing_backend:8080/";
+const baseUrl = "/backend";
 
 export const axiosInstance = axios.create({
   baseURL: baseUrl,

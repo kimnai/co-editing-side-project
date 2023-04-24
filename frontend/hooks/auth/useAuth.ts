@@ -2,22 +2,12 @@ import { API_USER } from "@lib/api/Auth";
 import { LoginData, SignUpData } from "@lib/interface/Auth";
 import { axiosInstance } from "api";
 import { useRouter } from "next/router";
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import { useUserAuthStore } from "store/useUserAuthStore";
 import { JwtPayload, decode } from "jsonwebtoken";
 import { useLocalStorage } from "@hooks/utility/useLocalStorage";
-
-type FormState = {
-  [k in keyof Omit<LoginData, "source">]: {
-    value: string;
-    isValid: boolean;
-  };
-} & {
-  username?: {
-    value: SignUpData["username"];
-    isValid: boolean;
-  };
-};
+import { AuthActionType, FormState, LOGIN_SOURCE } from "@lib/type/Auth";
+import { AxiosResponse } from "axios";
 
 const initialState: FormState = {
   email: {
@@ -30,15 +20,8 @@ const initialState: FormState = {
   },
 };
 
-type ActionType =
-  | "SET_EMAIL"
-  | "SET_PASSWORD"
-  | "SET_USER_NAME"
-  | "VALIDATE"
-  | "RESET";
-
 interface Action {
-  type: ActionType;
+  type: AuthActionType;
   payload?: string;
 }
 
@@ -114,7 +97,7 @@ const handleTransformState = (state: FormState) => {
 };
 
 export const useAuth = () => {
-  const { getItem, setItem, removeItem } = useLocalStorage()!;
+  const localStorage = useLocalStorage()!;
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setLoginInfo, setUserInfo, resetAll } = useUserAuthStore();
   const router = useRouter();
@@ -124,11 +107,39 @@ export const useAuth = () => {
     return Object.entries(state).every(([p, v]) => v.isValid);
   };
 
+  const handleLoginResponse = async (
+    res: AxiosResponse,
+    source: LOGIN_SOURCE
+  ) => {
+    try {
+      if (!res || !res?.data) throw new Error("Axios response error");
+      const { access_token, refresh_token } = res.data;
+      const decoded = decode(access_token) as JwtPayload;
+
+      setLoginInfo({ isLoggedIn: true, isGoogleLogin: source === "google" });
+      setUserInfo({
+        username: decoded.username,
+        email: decoded.email,
+      });
+
+      localStorage.setItem(
+        "tokens",
+        JSON.stringify({
+          access_token: access_token,
+          refresh_token: refresh_token,
+        })
+      );
+      router.push("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmitForm = async (action: "login" | "signup") => {
     const formIsValid = handleValidation();
     if (!formIsValid) return false;
 
-    const body = handleTransformState(state);
+    const body: LoginData | SignUpData = handleTransformState(state);
     if (action === "login") body.source = "first_party";
 
     try {
@@ -137,32 +148,23 @@ export const useAuth = () => {
         body
       );
 
-      if (!res) throw new Error(`${res} Error occured`);
-
-      const { data } = res;
-      if (data.access_token) {
-        const decoded = decode(data.access_token) as JwtPayload;
-
-        setLoginInfo({ isLoggedIn: true, isGoogleLogin: false });
-        setUserInfo({ username: decoded.username, email: decoded.email });
-
-        setItem(
-          "tokens",
-          JSON.stringify({
-            access_token: data.access_token,
-            refresh_token: data.refresh_token,
-          })
-        );
-      }
+      handleLoginResponse(res, "first_party");
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleLogout = () => {
-    removeItem("tokens");
+    console.log("logout user");
+    localStorage.removeItem("tokens");
     router.push("/user/login");
   };
 
-  return { handleSubmitForm, dispatch, state, handleLogout };
+  return {
+    handleSubmitForm,
+    dispatch,
+    state,
+    handleLogout,
+    handleLoginResponse,
+  };
 };

@@ -1,14 +1,14 @@
 import { API_USER } from "@lib/api/Auth";
-import { LoginData, SignUpData, Tokens } from "@lib/interface/Auth";
+import { LoginData, SignUpData } from "@lib/interface/Auth";
 import { axiosInstance } from "api";
 import { useRouter } from "next/router";
-import { FormEvent, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { useUserAuthStore } from "store/useUserAuthStore";
-import { decode } from "jsonwebtoken";
+import { JwtPayload, decode } from "jsonwebtoken";
 import { useLocalStorage } from "@hooks/utility/useLocalStorage";
 
 type FormState = {
-  [k in keyof LoginData]: {
+  [k in keyof Omit<LoginData, "source">]: {
     value: string;
     isValid: boolean;
   };
@@ -105,34 +105,43 @@ const reducer = (state: FormState, action: Action) => {
   }
 };
 
+const handleTransformState = (state: FormState) => {
+  let body = {};
+  for (const [key, value] of Object.entries(state)) {
+    body[key] = value.value;
+  }
+  return body as LoginData | SignUpData;
+};
+
 export const useAuth = () => {
-  const { getItem, setItem, removeItem } = useLocalStorage();
+  const { getItem, setItem, removeItem } = useLocalStorage()!;
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setLoginInfo, setUserInfo, resetAll } = useUserAuthStore();
   const router = useRouter();
 
-  const handleValidation = (action: "login" | "signup"): boolean => {
+  const handleValidation = (): boolean => {
     dispatch({ type: "VALIDATE" });
     return Object.entries(state).every(([p, v]) => v.isValid);
   };
 
   const handleSubmitForm = async (action: "login" | "signup") => {
-    const formIsValid = handleValidation(action);
+    const formIsValid = handleValidation();
     if (!formIsValid) return false;
 
-    let body = { email: state.email.value, password: state.password.value };
-    if (action === "signup")
-      body = Object.assign(body, { username: state.username?.value });
+    const body = handleTransformState(state);
+    if (action === "login") body.source = "first_party";
+
     try {
       const res = await axiosInstance.post(
         action === "login" ? API_USER.LOGIN : API_USER.SIGNUP,
         body
       );
-      if (!res) throw new Error(`Error occured`);
+
+      if (!res) throw new Error(`${res} Error occured`);
 
       const { data } = res;
       if (data.access_token) {
-        const decoded = decode(data.access_token);
+        const decoded = decode(data.access_token) as JwtPayload;
 
         setLoginInfo({ isLoggedIn: true, isGoogleLogin: false });
         setUserInfo({ username: decoded.username, email: decoded.email });
@@ -151,7 +160,6 @@ export const useAuth = () => {
   };
 
   const handleLogout = () => {
-    resetAll();
     removeItem("tokens");
     router.push("/user/login");
   };

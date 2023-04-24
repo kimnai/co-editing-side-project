@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 
 export const Nav = (): JSX.Element => {
   const { loginInfo } = useUserAuthStore();
+  console.log(loginInfo);
   const { isLoggedIn, isGoogleLogin } = loginInfo;
   const { handleLogout } = useAuth();
   const { handleGoogleLogout } = useGoogleAuth();

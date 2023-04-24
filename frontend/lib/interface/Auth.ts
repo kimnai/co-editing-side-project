@@ -3,12 +3,19 @@ export interface Tokens {
   refresh_token: string;
 }
 
+export interface DecodedAccessToken {
+  username: string;
+  email: string;
+  exp: number;
+}
+
 export interface LoginData {
   email: string;
   password: string;
+  source: "google" | "first_party";
 }
 
-export interface SignUpData extends LoginData {
+export interface SignUpData extends Omit<LoginData, "source"> {
   username: string;
 }
 

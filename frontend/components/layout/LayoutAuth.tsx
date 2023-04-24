@@ -1,9 +1,9 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
 import classes from "@style/Layout.module.css";
-import { useGoogleAuth } from "@hooks/auth/useGoogleAuth";
 import { Aside } from "./Aside";
 import { useVerifyToken } from "@hooks/auth/useVerifyToken";
 import { Nav } from "./Nav";
+import dynamic from "next/dynamic";
 
 export const LayoutAuth = (props: PropsWithChildren) => {
   useVerifyToken();

@@ -31,8 +31,11 @@ services:
       - /app/.next
   postgres:
     container_name: co-editing_database
-    image: postgres:15.2
+    image: co-editing-database
     restart: on-failure
+    build:
+      context: ./backend/
+      dockerfile: ./docker/postgres.Dockerfile
     volumes:
       - test-data:/var/lib/postgressql
     environment:

@@ -15,10 +15,10 @@ const (
 	dbname = "postgres"
 )
 
-var db *sql.DB
+var Client *sql.DB
 
 func Get(name string) string {
-	stmt, err := db.Prepare("SELECT * FROM userinfo WHERE name=?;")
+	stmt, err := Client.Prepare("SELECT * FROM userinfo WHERE name=?;")
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +33,7 @@ func Get(name string) string {
 }
 
 func GetToday() (string, error) {
-	stmt, err := db.Prepare("SELECT current_date;")
+	stmt, err := Client.Prepare("SELECT current_date;")
 	if err != nil {
 		log.Print(err)
 		return "", err
@@ -55,7 +55,7 @@ func init() {
 	log.Printf("Start to connect the database host: %s\n", host)
 	datastorename := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	var err error
-	db, err = sql.Open("postgres", datastorename)
+	Client, err = sql.Open("postgres", datastorename)
 	if err != nil {
 		panic(err)
 	}

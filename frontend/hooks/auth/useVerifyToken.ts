@@ -5,24 +5,18 @@ import { axiosInstance } from "api";
 import { JwtPayload, decode } from "jsonwebtoken";
 import { useAuth } from "./useAuth";
 import { useLocalStorage } from "@hooks/utility/useLocalStorage";
-import { useEffect } from "react";
 import { useUserAuthStore } from "store/useUserAuthStore";
 
 export const useVerifyToken = () => {
   const { handleLogout } = useAuth();
-  const { loginInfo } = useUserAuthStore();
   const { getItem, setItem } = useLocalStorage()!;
 
-  const tokens: Tokens | null = getItem("tokens");
+  const tokens = getItem("tokens") as Tokens;
   console.log(tokens);
 
-  //TODO: remove this guard clause afterward
-  if (loginInfo.isGoogleLogin) return;
-
   //if there is no token in storage, then push to login page
-  if (!tokens || (!loginInfo.isGoogleLogin && !tokens?.access_token)) {
+  if (!tokens || !tokens?.access_token) {
     handleLogout();
-
     return;
   }
 

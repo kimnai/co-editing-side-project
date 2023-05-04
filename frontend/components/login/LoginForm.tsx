@@ -76,7 +76,11 @@ export const LoginForm: React.FC<{ action: "login" | "signup" }> = ({
             )}
           </IconButton>
         </div>
-        <button className={classes.btn} aria-label="submit-button">
+        <button
+          className={classes.btn}
+          aria-label="submit-button"
+          onClick={(e) => handleSubmitForm(isLogin ? "login" : "signup")}
+        >
           {isLogin ? "Login" : "Signup"}
         </button>
         {isLogin && (

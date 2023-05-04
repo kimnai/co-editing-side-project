@@ -13,7 +13,7 @@ export interface DecodedAccessToken {
 
 export interface LoginData {
   email: string;
-  password?: string;
+  password: string;
   source: LOGIN_SOURCE;
 }
 

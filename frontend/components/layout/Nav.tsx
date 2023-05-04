@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 
 export const Nav = (): JSX.Element => {
   const { loginInfo } = useUserAuthStore();
-  console.log(loginInfo);
   const { isLoggedIn, isGoogleLogin } = loginInfo;
   const { handleLogout } = useAuth();
   const { handleGoogleLogout } = useGoogleAuth();
@@ -17,6 +16,7 @@ export const Nav = (): JSX.Element => {
     if (isGoogleLogin) handleGoogleLogout();
     else handleLogout();
   };
+  console.log(isLoggedIn);
 
   return (
     <nav className={classes.nav}>

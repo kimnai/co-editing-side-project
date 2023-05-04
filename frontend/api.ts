@@ -19,11 +19,12 @@ axiosInstance.interceptors.request.use(
       config.url === `${API_USER.SIGNUP}`
     )
       return config;
-    const tokens = localStorage.getItem("tokens");
-    if (tokens === null) return config;
+    const tokenFromStorage = localStorage.getItem("tokens");
+
+    if (tokenFromStorage === null) return config;
+    const tokens = JSON.parse(tokenFromStorage);
     //rotate token if expires
-    const { access_token } = tokens as Tokens;
-    config.headers.Authorization = `Bearer ${access_token}`;
+    config.headers.Authorization = `Bearer ${tokens.access_token}`;
     return config;
   },
   (error) => {

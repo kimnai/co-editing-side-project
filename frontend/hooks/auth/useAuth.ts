@@ -25,22 +25,23 @@ interface Action {
   payload?: string;
 }
 
-const reducer = (state: FormState, action: Action) => {
-  if (
-    action.type !== "VALIDATE" &&
-    (!action.payload || action.payload.trim().length === 0)
-  )
-    return state;
+const reducer = (state: FormState, action: Action): FormState => {
   const value = action.payload;
   switch (action.type) {
-    case "SET_EMAIL":
+    case "SET_EMAIL": {
+      if (!value) return state;
       return { ...state, email: { value: value, isValid: false } };
+    }
 
-    case "SET_USER_NAME":
+    case "SET_USER_NAME": {
+      if (!value) return state;
       return { ...state, username: { value: value, isValid: false } };
+    }
 
-    case "SET_PASSWORD":
+    case "SET_PASSWORD": {
+      if (!value) return state;
       return { ...state, password: { value: value, isValid: false } };
+    }
 
     case "VALIDATE": {
       const email = state.email.value;
@@ -66,7 +67,7 @@ const reducer = (state: FormState, action: Action) => {
         };
 
       const username = state.username?.value;
-      const usernameIsValid = username && username.trim().length >= 5;
+      const usernameIsValid = !!username && username.trim().length >= 5;
 
       return {
         ...state,
@@ -88,14 +89,6 @@ const reducer = (state: FormState, action: Action) => {
   }
 };
 
-const handleTransformState = (state: FormState) => {
-  let body = {};
-  for (const [key, value] of Object.entries(state)) {
-    body[key] = value.value;
-  }
-  return body as LoginData | SignUpData;
-};
-
 export const useAuth = () => {
   const localStorage = useLocalStorage()!;
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -104,7 +97,22 @@ export const useAuth = () => {
 
   const handleValidation = (): boolean => {
     dispatch({ type: "VALIDATE" });
+    console.log(state);
     return Object.entries(state).every(([p, v]) => v.isValid);
+  };
+
+  const handleTransformState = (action: "login" | "signup") => {
+    let body;
+    if (action === "login") body = {} as LoginData;
+    else body = {} as SignUpData;
+    for (const [key, value] of Object.entries(state)) {
+      body[key] = value.value;
+    }
+
+    if (action === "login") {
+      body.source = "first_party";
+    }
+    return body;
   };
 
   const handleLoginResponse = async (
@@ -137,10 +145,10 @@ export const useAuth = () => {
 
   const handleSubmitForm = async (action: "login" | "signup") => {
     const formIsValid = handleValidation();
+    console.log(formIsValid, "submit");
     if (!formIsValid) return false;
 
-    const body: LoginData | SignUpData = handleTransformState(state);
-    if (action === "login") body.source = "first_party";
+    const body = handleTransformState(action);
 
     try {
       const res = await axiosInstance.post(
@@ -148,6 +156,14 @@ export const useAuth = () => {
         body
       );
 
+      if (action === "signup") {
+        //display message and request login
+        res.status === 200
+          ? alert("Sign up successfully. You may try to login now")
+          : alert("Something went wrong:(");
+
+        return;
+      }
       handleLoginResponse(res, "first_party");
     } catch (error) {
       console.log(error);
@@ -155,7 +171,6 @@ export const useAuth = () => {
   };
 
   const handleLogout = () => {
-    console.log("logout user");
     localStorage.removeItem("tokens");
     router.push("/user/login");
   };

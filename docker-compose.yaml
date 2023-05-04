@@ -20,6 +20,7 @@ services:
       - "3001:3001"
     command: ["npm", "run", "dev", "--", "-p", "3001"]
     restart: on-failure
+    env_file: ./frontend/.env.development
     volumes:
       - ./frontend/:/app/:ro
       - /app/node_modules

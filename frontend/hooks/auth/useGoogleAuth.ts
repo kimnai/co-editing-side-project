@@ -26,8 +26,8 @@ export interface DecodedGoogleCredential {
 
 export const useGoogleAuth = () => {
   const { handleLogout, handleLoginResponse } = useAuth();
-  const { loginInfo } = useUserAuthStore();
-
+  const { loginInfo, setLoginInfo, setUserInfo } = useUserAuthStore();
+  const router = useRouter();
   const handleGoogleLogin = async (res: GoogleCredentialResponse) => {
     if (!res) {
       console.error("error");
@@ -35,7 +35,14 @@ export const useGoogleAuth = () => {
     }
     try {
       if (!res.credential) return;
-      const { email } = decode(res.credential) as DecodedGoogleCredential;
+      const { email, name } = decode(res.credential) as DecodedGoogleCredential;
+
+      setLoginInfo({ isLoggedIn: true, isGoogleLogin: true });
+      setUserInfo({
+        username: name,
+        email: email,
+      });
+      router.push("/");
 
       //TODO: should remove comment once BE API is established
       // const response = await axiosInstance.post(`${API_USER.LOGIN}`, {

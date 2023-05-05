@@ -1,45 +1,57 @@
+import React, { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import React, { useState } from "react";
-import classes from "@style/Auth.module.css";
 import { useRouter } from "next/router";
 import Link from "next/link";
+
+import classes from "@style/Auth.module.css";
+import { AuthType } from "@lib/type/auth";
+import { criteria } from "@lib/constant/auth";
+import { Error, useAuth } from "@hooks/useAuth";
 
 export const Form: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
   const { query } = useRouter();
   const { auth } = query;
-  const formType: "login" | "signup" = auth?.includes("login")
-    ? "login"
-    : "signup";
+  const formType: AuthType = auth?.includes("login") ? "login" : "signup";
+  const { refs, errorState, handleSubmitForm } = useAuth(formType);
 
   const tabs = [
     { name: "login", isActive: formType === "login" },
     { name: "signup", isActive: formType === "signup" },
   ];
 
+  const checkFieldHasError = (field: Error["field"]): Error[] => {
+    return errorState.filter((e) => e.field === field);
+  };
+
+  const getFields = () => {
+    return formType === "login"
+      ? formField.filter((f) => f.name !== "username")
+      : formField;
+  };
+
   const formField = [
     {
       name: "username",
       label: "Username",
-      value: "",
-      isValid: true,
+      ref: refs.usernameref,
+      errors: checkFieldHasError("username"),
       adornments: null,
-      handleChange: () => {},
     },
     {
       name: "email",
       type: "email",
       label: "Email",
       adornments: null,
-      value: "",
-      isValid: true,
-      handleChange: () => {},
+      ref: refs.emailRef,
+      errors: checkFieldHasError("email"),
     },
     {
       name: "password",
       type: pwdIsVisible ? "text" : "password",
       label: "Password",
+      ref: refs.passwordRef,
       adornments: (
         <IconButton
           size="medium"
@@ -53,20 +65,19 @@ export const Form: React.FC = (): JSX.Element => {
           )}
         </IconButton>
       ),
-      value: "",
-      isValid: true,
-      handleChange: () => {},
+      errors: checkFieldHasError("password"),
     },
   ];
 
-  const getFields = () => {
-    return formType === "login"
-      ? formField.filter((f) => f.name !== "username")
-      : formField;
-  };
-
   return (
-    <form action="submit" className={classes.form}>
+    <form
+      action="submit"
+      className={classes.form}
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmitForm();
+      }}
+    >
       <div className={classes.tabs}>
         {tabs.map((t) => (
           <div
@@ -85,12 +96,21 @@ export const Form: React.FC = (): JSX.Element => {
           <div key={f.name}>
             <label htmlFor={f.name}>{f.label}</label>
             <input
+              ref={f.ref}
               type={f.type}
-              value={f.value}
-              onChange={(e) => f.handleChange()}
-              className={!f.isValid ? classes["input-error"] : ""}
+              className={f.errors.length > 0 ? classes["input-error"] : ""}
             />
             {f.adornments !== null && f.adornments}
+            {f.errors.length > 0 &&
+              f.errors.map((e) => (
+                <div className={classes.hint} key={`${e.field}_${e.type}`}>
+                  {e.type === "length" && e.field !== "email"
+                    ? `${e.field} length should be greater than ${
+                        criteria[e.field].minLength
+                      }`
+                    : `Invalid ${e.field} pattern`}
+                </div>
+              ))}
           </div>
         ))}
         <button>{tabs.find((t) => t.isActive)?.name ?? tabs[0].name}</button>

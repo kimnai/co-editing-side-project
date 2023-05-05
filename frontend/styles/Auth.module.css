@@ -2,11 +2,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 40rem;
+  width: 35rem;
   margin: 3rem;
 
   color: var(--font-rg);
-  padding: 6rem;
+  padding: 5rem;
   padding-top: 4rem;
   border: 1px solid var(--border-rg);
   box-shadow: 0 5px 5px 5px var(--border-rg);
@@ -27,8 +27,8 @@
 .form .tab {
   width: 50%;
   text-align: center;
-  padding: 2rem;
-  font-size: 2rem;
+  padding: 1.5rem;
+  font-size: 1.6rem;
   color: var(--font-dark);
 }
 
@@ -48,7 +48,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  margin: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .formField label {
@@ -75,7 +75,7 @@
 .formField .adornment {
   position: absolute;
   right: 0.2rem;
-  top: 0.2rem;
+  top: 28%;
   background: none;
   border: none;
 }
@@ -86,11 +86,15 @@
   background-color: var(--btn-bg);
   border: 1px solid var(--border-rg);
   padding: 1rem;
-  margin-top: 2rem;
+  margin: 0.5rem 0;
   border-radius: 0.5rem;
 }
 
 .form button .error {
   background-color: var(--error-bg);
   border-color: var(--error-border);
+}
+
+.hint {
+  color: var(--error-border);
 }

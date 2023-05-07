@@ -44,11 +44,16 @@
   flex-direction: column;
 }
 
-.formField > * {
+.formField div {
   display: flex;
   position: relative;
   flex-direction: column;
   margin-bottom: 1rem;
+}
+
+.formField .thirdParty {
+  text-align: center;
+  padding: 2rem;
 }
 
 .formField label {

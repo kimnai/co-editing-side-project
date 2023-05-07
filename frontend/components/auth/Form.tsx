@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { GoogleLogin } from "@react-oauth/google";
 
 import classes from "@style/Auth.module.css";
 import { AuthType } from "@lib/type/auth";
 import { criteria } from "@lib/constant/auth";
 import { Error, useAuth } from "@hooks/useAuth";
+import { useGoogleAuth } from "@hooks/useGoogleAuth";
 
 export const Form: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
@@ -15,6 +17,7 @@ export const Form: React.FC = (): JSX.Element => {
   const { auth } = query;
   const formType: AuthType = auth?.includes("login") ? "login" : "signup";
   const { refs, errorState, handleSubmitForm } = useAuth(formType);
+  const { handleGoogleLogin } = useGoogleAuth();
 
   const tabs = [
     { name: "login", isActive: formType === "login" },
@@ -114,6 +117,16 @@ export const Form: React.FC = (): JSX.Element => {
           </div>
         ))}
         <button>{tabs.find((t) => t.isActive)?.name ?? tabs[0].name}</button>
+
+        <div className={classes.thirdParty}>
+          <div>Or continue with</div>
+          <GoogleLogin
+            type="icon"
+            logo_alignment="center"
+            onSuccess={(res) => handleGoogleLogin(res)}
+            onError={() => console.log("error")}
+          />
+        </div>
       </div>
     </form>
   );

@@ -1,6 +1,10 @@
 import { API_USER } from "@lib/api";
-import { authErrorResponse, criteria } from "@lib/constant/auth";
-import { LoginReqBody } from "@lib/interface/auth";
+import {
+  signupErrorResponse,
+  loginErrorResponse,
+  criteria,
+} from "@lib/constant/auth";
+import { LoginReqBody, SignupReqBody } from "@lib/interface/auth";
 import { AuthType, LoginSource } from "@lib/type/auth";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -11,9 +15,9 @@ export interface Error {
 }
 
 export const useAuth = (authType: AuthType) => {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const usernameref = useRef(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const usernameref = useRef<HTMLInputElement>(null);
   const refs =
     authType === "login"
       ? { emailRef, passwordRef }
@@ -25,8 +29,8 @@ export const useAuth = (authType: AuthType) => {
   const handleValidation = (): boolean => {
     if (Object.values(refs).some((f) => f.current === null)) return false;
     let errors: Error[] = [];
-    const email: string = emailRef.current.value;
-    const password: string = passwordRef.current.value;
+    const email: string = emailRef.current!.value;
+    const password: string = passwordRef.current!.value;
 
     if (!criteria.email.regex.test(email))
       errors.push({ field: "email", type: "pattern" });
@@ -35,7 +39,7 @@ export const useAuth = (authType: AuthType) => {
       errors.push({ field: "password", type: "length" });
 
     if (authType === "signup") {
-      const username: string = usernameref.current.value;
+      const username: string = usernameref.current!.value;
       if (username.length < criteria.username.minLength)
         errors.push({ field: "username", type: "length" });
     }
@@ -48,44 +52,83 @@ export const useAuth = (authType: AuthType) => {
   /**
    *
    * @param source
-   * Handle login api request & response
+   * Handle login api request and subsequent side effects, including:
+   *  - store access token in localStorage
+   *  - store user info in global store
+   *  - redirect user to home page
    */
   const handleLoginReq = async (source: LoginSource, body) => {
     try {
-      const res = await fetch(API_USER.LOGIN, body);
+      const res = await fetch(API_USER.LOGIN, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
 
       if (!res.ok) {
         let error: string;
-        if (res.status === 401) error = authErrorResponse[401];
-        else if (res.status === 409) error = authErrorResponse[409];
-        else if (res.status === 400) error = authErrorResponse[400];
-        else error = authErrorResponse[500];
+        if (res.status === 401) error = loginErrorResponse[401];
+        else if (res.status === 409) error = loginErrorResponse[409];
+        else if (res.status === 400) error = loginErrorResponse[400];
+        else error = loginErrorResponse[500];
         throw new Error(error);
       }
 
-      //set access token in localStorage
       localStorage.setItem("access_token", JSON.stringify(res));
 
       //set user info in global store
 
-      //push to home page
       router.push("/home");
     } catch (error) {
       //TODO: display pop up for error
-      console.log(error);
+      console.error(error);
+    }
+  };
+
+  /**
+   * handle signup api request and subsequent side effects, including:
+   *  - redirect user to login page
+   */
+  const handleSignupReq = async (body: SignupReqBody) => {
+    try {
+      const res = await fetch(API_USER.SIGNUP, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        let error: string;
+        if (res.status === 409) error = signupErrorResponse[409];
+        if (res.status === 400) error = signupErrorResponse[400];
+        else error = signupErrorResponse[500];
+        throw new Error(error);
+      }
+
+      //TODO: tell user to login
+      router.push("/login");
+    } catch (error) {
+      //TODO: display pop up for error
+      console.error(error);
     }
   };
 
   const handleSubmitForm = () => {
     const isValid = handleValidation();
-
     if (!isValid) return;
-    const body: LoginReqBody<"FirstParty"> = {
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
-      source: "FirstParty",
-    };
-    handleLoginReq("FirstParty", body);
+    if (authType === "login") {
+      const body: LoginReqBody<"FirstParty"> = {
+        email: emailRef.current!.value,
+        password: passwordRef.current!.value,
+        source: "FirstParty",
+      };
+      handleLoginReq("FirstParty", body);
+    } else {
+      const body: SignupReqBody = {
+        username: usernameref.current!.value,
+        email: emailRef.current!.value,
+        password: passwordRef.current!.value,
+      };
+      handleSignupReq(body);
+    }
   };
 
   useEffect(() => {

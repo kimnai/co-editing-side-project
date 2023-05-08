@@ -7,6 +7,12 @@ export interface LoginReqBody<T extends LoginSource> {
   source: T;
 }
 
+export interface SignupReqBody {
+  username: string;
+  email: string;
+  password: string;
+}
+
 export interface LoginRes {
   access_token: string;
 }

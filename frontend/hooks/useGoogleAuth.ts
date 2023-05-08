@@ -1,5 +1,7 @@
+import { LoginReqBody } from "@lib/interface/auth";
 import { GoogleCredentialResponse } from "@react-oauth/google";
 import { decode } from "jsonwebtoken";
+import { useAuth } from "./useAuth";
 
 interface DecodedGoogleCredential {
   email: string;
@@ -15,14 +17,22 @@ interface DecodedGoogleCredential {
 }
 
 export const useGoogleAuth = () => {
-  //get & decode the ID token
+  const { handleLoginReq } = useAuth("login");
+
   const handleGoogleLogin = (res: GoogleCredentialResponse) => {
     if (!res || !res.credential) return;
     const { credential } = res;
     const decoded = decode(credential) as DecodedGoogleCredential;
     const { name, email, picture, exp } = decoded;
 
-    //POST user/login
+    const body: LoginReqBody<"Google"> = {
+      email: email,
+      password: undefined,
+      source: "Google",
+    };
+
+    //send login request to BE
+    handleLoginReq("Google", body);
   };
 
   return { handleGoogleLogin };

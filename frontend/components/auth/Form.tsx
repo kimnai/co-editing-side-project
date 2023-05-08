@@ -71,6 +71,7 @@ export const Form: React.FC = (): JSX.Element => {
       errors: checkFieldHasError("password"),
     },
   ];
+  console.log(errorState);
 
   return (
     <form
@@ -95,6 +96,13 @@ export const Form: React.FC = (): JSX.Element => {
       </div>
 
       <div className={classes.formField}>
+        {errorState
+          .filter((e) => e.field === "global")
+          .map((e) => (
+            <div key={e} className={classes.hint}>
+              {e.message}
+            </div>
+          ))}
         {getFields().map((f) => (
           <div key={f.name}>
             <label htmlFor={f.name}>{f.label}</label>

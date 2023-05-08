@@ -6,12 +6,14 @@ import {
 } from "@lib/constant/auth";
 import { LoginReqBody, SignupReqBody } from "@lib/interface/auth";
 import { AuthType, LoginSource } from "@lib/type/auth";
+import { axiosInstance } from "api";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 export interface Error {
-  field: "email" | "password" | "username";
-  type: "pattern" | "length";
+  field: "email" | "password" | "username" | "global";
+  type?: "pattern" | "length";
+  message?: string;
 }
 
 export const useAuth = (authType: AuthType) => {
@@ -49,6 +51,19 @@ export const useAuth = (authType: AuthType) => {
     return false;
   };
 
+  const handleApiError = (error) => {
+    let errorMessage: string;
+    const errorRes =
+      authType === "login" ? loginErrorResponse : signupErrorResponse;
+
+    if (error.response.status === 409) errorMessage = errorRes[409];
+    if (error.response.status === 400) errorMessage = errorRes[400];
+    if (authType === "login" && error.response.status === 401)
+      errorMessage = errorRes[401];
+    else error = errorRes[500];
+    setErrorState([{ field: "global", message: error }]);
+  };
+
   /**
    *
    * @param source
@@ -57,30 +72,16 @@ export const useAuth = (authType: AuthType) => {
    *  - store user info in global store
    *  - redirect user to home page
    */
-  const handleLoginReq = async (source: LoginSource, body) => {
+  const handleLoginReq = async (body) => {
     try {
-      const res = await fetch(API_USER.LOGIN, {
-        method: "POST",
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        let error: string;
-        if (res.status === 401) error = loginErrorResponse[401];
-        else if (res.status === 409) error = loginErrorResponse[409];
-        else if (res.status === 400) error = loginErrorResponse[400];
-        else error = loginErrorResponse[500];
-        throw new Error(error);
-      }
-
+      const res = await axiosInstance.post(API_USER.LOGIN, body);
       localStorage.setItem("access_token", JSON.stringify(res));
 
       //set user info in global store
-
       router.push("/home");
     } catch (error) {
-      //TODO: display pop up for error
       console.error(error);
+      handleApiError(error);
     }
   };
 
@@ -90,24 +91,12 @@ export const useAuth = (authType: AuthType) => {
    */
   const handleSignupReq = async (body: SignupReqBody) => {
     try {
-      const res = await fetch(API_USER.SIGNUP, {
-        method: "POST",
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        let error: string;
-        if (res.status === 409) error = signupErrorResponse[409];
-        if (res.status === 400) error = signupErrorResponse[400];
-        else error = signupErrorResponse[500];
-        throw new Error(error);
-      }
-
-      //TODO: tell user to login
+      const res = await axiosInstance.post(API_USER.SIGNUP, body);
+      //TODO: display hint for user to login
       router.push("/login");
     } catch (error) {
-      //TODO: display pop up for error
-      console.error(error);
+      console.log("error", error);
+      handleApiError(error);
     }
   };
 
@@ -120,7 +109,7 @@ export const useAuth = (authType: AuthType) => {
         password: passwordRef.current!.value,
         source: "FirstParty",
       };
-      handleLoginReq("FirstParty", body);
+      handleLoginReq(body);
     } else {
       const body: SignupReqBody = {
         username: usernameref.current!.value,

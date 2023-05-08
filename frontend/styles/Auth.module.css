@@ -103,3 +103,37 @@
 .hint {
   color: var(--error-border);
 }
+
+.nav {
+  display: flex;
+  padding: 1rem 4rem;
+}
+
+.nav ul {
+  width: 100%;
+  display: inherit;
+  align-items: center;
+  justify-content: end;
+}
+
+.nav ul li {
+  list-style-type: none;
+  margin: 0 1.5rem;
+  color: var(--font-rg);
+}
+
+.nav ul li > * {
+  text-decoration: none;
+  font-size: 2rem;
+}
+
+.nav ul li:last-child {
+  background-color: var(--font-rg);
+  color: white;
+  padding: 1.6rem;
+  border-radius: var(--border-ra-bg);
+}
+
+.nav ul li:last-child:hover {
+  background-color: var(--font-dark);
+}

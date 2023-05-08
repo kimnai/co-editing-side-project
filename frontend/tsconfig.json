@@ -23,6 +23,9 @@
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"
+      },
+      {
+        "name": "next"
       }
     ],
     "baseUrl": ".",
@@ -48,7 +51,8 @@
     "**/*.tsx",
     "**/*.css",
     "*.js",
-    "jest.config.js"
+    "jest.config.js",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

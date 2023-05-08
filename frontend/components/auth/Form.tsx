@@ -19,7 +19,7 @@ export const Form: React.FC = (): JSX.Element => {
   const { refs, errorState, handleSubmitForm } = useAuth(formType);
   const { handleGoogleLogin } = useGoogleAuth();
 
-  const tabs = [
+  const tabs: { name: AuthType; isActive: boolean }[] = [
     { name: "login", isActive: formType === "login" },
     { name: "signup", isActive: formType === "signup" },
   ];

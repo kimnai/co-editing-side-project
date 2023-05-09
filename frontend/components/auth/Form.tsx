@@ -14,8 +14,8 @@ import { useGoogleAuth } from "@hooks/useGoogleAuth";
 export const Form: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
   const { query } = useRouter();
-  const { auth } = query;
-  const formType: AuthType = auth?.includes("login") ? "login" : "signup";
+  const { authType } = query;
+  const formType: AuthType = authType?.includes("login") ? "login" : "signup";
   const { refs, errorState, handleSubmitForm } = useAuth(formType);
   const { handleGoogleLogin } = useGoogleAuth();
 
@@ -90,7 +90,7 @@ export const Form: React.FC = (): JSX.Element => {
               t.isActive ? classes["tab-active"] : ""
             }`}
           >
-            <Link href={`/${t.name}`}>{t.name}</Link>
+            <Link href={`/auth/${t.name}`}>{t.name}</Link>
           </div>
         ))}
       </div>
@@ -99,7 +99,7 @@ export const Form: React.FC = (): JSX.Element => {
         {errorState
           .filter((e) => e.field === "global")
           .map((e) => (
-            <div key={e} className={classes.hint}>
+            <div key={e.message} className={classes.hint}>
               {e.message}
             </div>
           ))}
@@ -131,7 +131,7 @@ export const Form: React.FC = (): JSX.Element => {
           <GoogleLogin
             type="icon"
             logo_alignment="center"
-            onSuccess={(res) => handleGoogleLogin(res)}
+            onSuccess={(res) => handleGoogleLogin(res, formType)}
             onError={() => console.log("error")}
           />
         </div>

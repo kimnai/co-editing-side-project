@@ -1,12 +1,14 @@
+import { Form } from "@components/auth/Form";
 import { LayoutAuth } from "@components/layout/LayoutAuth";
+import { Nav } from "@components/layout/Nav";
 import { PropsWithChildren } from "react";
 
-const UserHomePage = () => {
-  return <div>home</div>;
+const HomePage = () => {
+  return <div>welcome back, user</div>;
 };
 
-UserHomePage.getLayout = (props: PropsWithChildren) => {
-  return <LayoutAuth>{props.children}</LayoutAuth>;
+HomePage.getLayout = (page) => {
+  return <LayoutAuth>{page}</LayoutAuth>;
 };
 
-export default UserHomePage;
+export default HomePage;

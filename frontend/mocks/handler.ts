@@ -1,4 +1,4 @@
-import { API_USER } from "@lib/api/Auth";
+import { API_USER } from "@lib/api";
 import { rest } from "msw";
 
 const BE_URL = "http://co-editing_backend:8080";
@@ -8,7 +8,6 @@ export const handler = [
     return res(
       ctx.json({
         access_token: "mock_access_token",
-        refresh_token: "mock_refresh_token",
       })
     );
   }),
@@ -18,7 +17,6 @@ export const handler = [
     return res(
       ctx.json({
         access_token: "new_access_token",
-        refresh_token: refresh_token,
       })
     );
   }),

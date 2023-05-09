@@ -7,6 +7,7 @@ import {
 import { LoginReqBody, SignupReqBody } from "@lib/interface/auth";
 import { AuthType, LoginSource } from "@lib/type/auth";
 import { axiosInstance } from "api";
+import { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
@@ -79,6 +80,8 @@ export const useAuth = (authType: AuthType) => {
 
       //set user info in global store
       router.push("/home");
+
+      return res;
     } catch (error) {
       console.error(error);
       handleApiError(error);
@@ -89,11 +92,12 @@ export const useAuth = (authType: AuthType) => {
    * handle signup api request and subsequent side effects, including:
    *  - redirect user to login page
    */
-  const handleSignupReq = async (body: SignupReqBody) => {
+  const handleSignupReq = async (body) => {
     try {
       const res = await axiosInstance.post(API_USER.SIGNUP, body);
       //TODO: display hint for user to login
-      router.push("/login");
+      router.push("/auth/login");
+      return res;
     } catch (error) {
       console.log("error", error);
       handleApiError(error);
@@ -111,10 +115,11 @@ export const useAuth = (authType: AuthType) => {
       };
       handleLoginReq(body);
     } else {
-      const body: SignupReqBody = {
+      const body: SignupReqBody<"FirstParty"> = {
         username: usernameref.current!.value,
         email: emailRef.current!.value,
         password: passwordRef.current!.value,
+        source: "FirstParty",
       };
       handleSignupReq(body);
     }
@@ -130,5 +135,6 @@ export const useAuth = (authType: AuthType) => {
     handleSubmitForm,
     handleValidation,
     handleLoginReq,
+    handleSignupReq,
   };
 };

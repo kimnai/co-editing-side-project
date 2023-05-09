@@ -7,10 +7,11 @@ export interface LoginReqBody<T extends LoginSource> {
   source: T;
 }
 
-export interface SignupReqBody {
+export interface SignupReqBody<T extends LoginSource> {
   username: string;
   email: string;
-  password: string;
+  password: T extends "Google" ? undefined : string;
+  source: T;
 }
 
 export interface LoginRes {

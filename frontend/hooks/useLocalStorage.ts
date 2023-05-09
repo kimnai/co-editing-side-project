@@ -3,7 +3,7 @@ import { KEY_FOR_LS } from "@lib/enum/auth";
 export const useLocalStorage = () => {
   const setItem = (key: KEY_FOR_LS, data: any) => {
     localStorage.removeItem(key);
-    localStorage.setItem(key, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify({ ...data }));
   };
 
   const getItem = (key: KEY_FOR_LS) => {
@@ -20,11 +20,12 @@ export const useLocalStorage = () => {
 
   const addItem = (key: KEY_FOR_LS, data: any) => {
     const item = getItem(key);
-    if (item === null) {
+
+    if (item === null || item[Object.keys(data)[0]]) {
       setItem(key, data);
       return;
     }
-    setItem(key, { ...item, data });
+    setItem(key, { ...item, ...data });
   };
 
   return { setItem, getItem, removeItem, addItem };

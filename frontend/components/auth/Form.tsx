@@ -9,15 +9,14 @@ import classes from "@style/Auth.module.css";
 import { AuthType } from "@lib/type/auth";
 import { criteria } from "@lib/constant/auth";
 import { Error, useAuth } from "@hooks/useAuth";
-import { useGoogleAuth } from "@hooks/useGoogleAuth";
 
 export const Form: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
   const { query } = useRouter();
   const { authType } = query;
   const formType: AuthType = authType?.includes("login") ? "login" : "signup";
-  const { refs, errorState, handleSubmitForm } = useAuth(formType);
-  const { handleGoogleLogin } = useGoogleAuth();
+  const { refs, errorState, handleSubmitForm, handleGoogleLogin } =
+    useAuth(formType);
 
   const tabs: { name: AuthType; isActive: boolean }[] = [
     { name: "login", isActive: formType === "login" },
@@ -71,7 +70,7 @@ export const Form: React.FC = (): JSX.Element => {
       errors: checkFieldHasError("password"),
     },
   ];
-  console.log(errorState);
+  console.log("errorState", errorState);
 
   return (
     <form
@@ -133,6 +132,7 @@ export const Form: React.FC = (): JSX.Element => {
             logo_alignment="center"
             onSuccess={(res) => handleGoogleLogin(res, formType)}
             onError={() => console.log("error")}
+            containerProps={{ style: { margin: "auto" } }}
           />
         </div>
       </div>

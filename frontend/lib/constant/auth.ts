@@ -19,7 +19,7 @@ export const signupErrorResponse: Omit<ErrorMessage, 200 | 401> = {
 };
 
 export const loginErrorResponse: Omit<ErrorMessage, 200> = {
-  400: "Wring email or password",
+  400: "Wrong email or password",
   401: "You don't have an account yet. Please sign up first",
   409: "You signed up with different source previously. Please log in with same source",
   500: "Internal server error occurred. Please contact us.",

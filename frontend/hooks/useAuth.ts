@@ -10,6 +10,7 @@ import {
 } from "@lib/constant/auth";
 import {
   DecodedAccessToken,
+  DecodedGoogleCredential,
   LoginReqBody,
   SignupReqBody,
   UserInfo,
@@ -19,6 +20,7 @@ import { KEY_FOR_LS } from "@lib/enum/auth";
 
 import { axiosInstance } from "api";
 import { useLocalStorage } from "./useLocalStorage";
+import { GoogleCredentialResponse } from "@react-oauth/google";
 
 export interface Error {
   field: "email" | "password" | "username" | "global";
@@ -27,7 +29,7 @@ export interface Error {
 }
 
 export const useAuth = (authType: AuthType) => {
-  const { setItem, removeItem } = useLocalStorage();
+  const { setItem, removeItem, addItem } = useLocalStorage();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const usernameref = useRef<HTMLInputElement>(null);
@@ -68,11 +70,12 @@ export const useAuth = (authType: AuthType) => {
       authType === "login" ? loginErrorResponse : signupErrorResponse;
 
     if (error.response.status === 409) errorMessage = errorRes[409];
-    if (error.response.status === 400) errorMessage = errorRes[400];
-    if (authType === "login" && error.response.status === 401)
+    else if (error.response.status === 400) errorMessage = errorRes[400];
+    else if (authType === "login" && error.response.status === 401)
       errorMessage = errorRes[401];
-    else error = errorRes[500];
-    setErrorState([{ field: "global", message: error }]);
+    else errorMessage = errorRes[500];
+
+    setErrorState((prev) => [{ field: "global", message: errorMessage }]);
   };
 
   /**
@@ -94,16 +97,16 @@ export const useAuth = (authType: AuthType) => {
       const decodedAccessToken = decode(res.data) as DecodedAccessToken;
 
       const userInfo: UserInfo = {
-        ...decodedAccessToken,
+        username: decodedAccessToken.username ?? decodedAccessToken.name,
+        email: decodedAccessToken.email,
         loginProvider:
           body["source"] === "FirstParty" ? "FirstParty" : "Google",
       };
       setItem(KEY_FOR_LS.user_info, userInfo);
-
       router.push("/home");
       return res;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       handleApiError(error);
     }
   };
@@ -147,6 +150,36 @@ export const useAuth = (authType: AuthType) => {
     }
   };
 
+  const handleGoogleLogin = async (
+    res: GoogleCredentialResponse,
+    authType: AuthType
+  ) => {
+    if (!res || !res.credential) return;
+    const { credential } = res;
+    const decoded = decode(credential) as DecodedGoogleCredential;
+    const { name, email, picture } = decoded;
+
+    if (authType === "signup") {
+      const signupBody: SignupReqBody<"Google"> = {
+        username: name,
+        email: email,
+        password: undefined,
+        source: "Google",
+      };
+      const signupRes = await handleSignupReq(signupBody);
+      if (!signupRes) return;
+    }
+
+    const body: LoginReqBody<"Google"> = {
+      email: email,
+      password: undefined,
+      source: "Google",
+    };
+
+    await handleLoginReq(body);
+    addItem(KEY_FOR_LS.user_info, { picture: picture });
+  };
+
   const handleLogout = () => {
     router.push("/");
     removeItem(KEY_FOR_LS.access_token, KEY_FOR_LS.user_info);
@@ -164,5 +197,6 @@ export const useAuth = (authType: AuthType) => {
     handleLoginReq,
     handleSignupReq,
     handleLogout,
+    handleGoogleLogin,
   };
 };

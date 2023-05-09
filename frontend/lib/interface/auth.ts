@@ -1,5 +1,18 @@
 import { LoginSource, SignupResStatusCode } from "@lib/type/auth";
 
+export interface DecodedGoogleCredential {
+  email: string;
+  email_verified: boolean;
+  exp: number;
+  family_name: string;
+  given_name: string;
+  name: string;
+  iat: number;
+  jti: string;
+  nbf: number;
+  picture: string;
+}
+
 //Todo: make password optional
 export interface LoginReqBody<T extends LoginSource> {
   email: string;

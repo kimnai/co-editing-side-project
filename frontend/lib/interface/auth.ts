@@ -17,3 +17,15 @@ export interface SignupReqBody<T extends LoginSource> {
 export interface LoginRes {
   access_token: string;
 }
+
+export interface DecodedAccessToken {
+  username: string;
+  email: string;
+  //unix timestamp in second
+  exp: number;
+}
+
+export interface UserInfo extends Omit<DecodedAccessToken, "exp"> {
+  picture?: string;
+  loginProvider: LoginSource;
+}

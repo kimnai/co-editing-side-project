@@ -1,15 +1,24 @@
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { decode } from "jsonwebtoken";
+
 import { API_USER } from "@lib/api";
 import {
   signupErrorResponse,
   loginErrorResponse,
   criteria,
 } from "@lib/constant/auth";
-import { LoginReqBody, SignupReqBody } from "@lib/interface/auth";
-import { AuthType, LoginSource } from "@lib/type/auth";
+import {
+  DecodedAccessToken,
+  LoginReqBody,
+  SignupReqBody,
+  UserInfo,
+} from "@lib/interface/auth";
+import { AuthType } from "@lib/type/auth";
+import { KEY_FOR_LS } from "@lib/enum/auth";
+
 import { axiosInstance } from "api";
-import { AxiosResponse } from "axios";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useLocalStorage } from "./useLocalStorage";
 
 export interface Error {
   field: "email" | "password" | "username" | "global";
@@ -18,6 +27,7 @@ export interface Error {
 }
 
 export const useAuth = (authType: AuthType) => {
+  const { setItem, removeItem } = useLocalStorage();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const usernameref = useRef<HTMLInputElement>(null);
@@ -73,14 +83,24 @@ export const useAuth = (authType: AuthType) => {
    *  - store user info in global store
    *  - redirect user to home page
    */
-  const handleLoginReq = async (body) => {
+  const handleLoginReq = async (
+    body: LoginReqBody<"FirstParty" | "Google">
+  ) => {
     try {
       const res = await axiosInstance.post(API_USER.LOGIN, body);
-      localStorage.setItem("access_token", JSON.stringify(res));
+      if (!res.data) throw new Error("Data not found");
 
-      //set user info in global store
+      setItem(KEY_FOR_LS.access_token, res.data);
+      const decodedAccessToken = decode(res.data) as DecodedAccessToken;
+
+      const userInfo: UserInfo = {
+        ...decodedAccessToken,
+        loginProvider:
+          body["source"] === "FirstParty" ? "FirstParty" : "Google",
+      };
+      setItem(KEY_FOR_LS.user_info, userInfo);
+
       router.push("/home");
-
       return res;
     } catch (error) {
       console.error(error);
@@ -92,7 +112,9 @@ export const useAuth = (authType: AuthType) => {
    * handle signup api request and subsequent side effects, including:
    *  - redirect user to login page
    */
-  const handleSignupReq = async (body) => {
+  const handleSignupReq = async (
+    body: SignupReqBody<"FirstParty" | "Google">
+  ) => {
     try {
       const res = await axiosInstance.post(API_USER.SIGNUP, body);
       //TODO: display hint for user to login
@@ -125,6 +147,11 @@ export const useAuth = (authType: AuthType) => {
     }
   };
 
+  const handleLogout = () => {
+    router.push("/");
+    removeItem(KEY_FOR_LS.access_token, KEY_FOR_LS.user_info);
+  };
+
   useEffect(() => {
     setErrorState([]);
   }, [authType]);
@@ -136,5 +163,6 @@ export const useAuth = (authType: AuthType) => {
     handleValidation,
     handleLoginReq,
     handleSignupReq,
+    handleLogout,
   };
 };

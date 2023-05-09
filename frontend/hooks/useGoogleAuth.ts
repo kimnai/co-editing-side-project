@@ -3,6 +3,8 @@ import { GoogleCredentialResponse } from "@react-oauth/google";
 import { decode } from "jsonwebtoken";
 import { useAuth } from "./useAuth";
 import { AuthType } from "@lib/type/auth";
+import { KEY_FOR_LS } from "@lib/enum/auth";
+import { useLocalStorage } from "./useLocalStorage";
 
 interface DecodedGoogleCredential {
   email: string;
@@ -19,6 +21,7 @@ interface DecodedGoogleCredential {
 
 export const useGoogleAuth = () => {
   const { handleLoginReq, handleSignupReq } = useAuth("login");
+  const { addItem } = useLocalStorage();
 
   const handleGoogleLogin = async (
     res: GoogleCredentialResponse,
@@ -27,7 +30,8 @@ export const useGoogleAuth = () => {
     if (!res || !res.credential) return;
     const { credential } = res;
     const decoded = decode(credential) as DecodedGoogleCredential;
-    const { name, email, picture, exp } = decoded;
+    const { name, email, picture } = decoded;
+    console.log(decoded);
 
     if (authType === "signup") {
       const signupBody: SignupReqBody<"Google"> = {
@@ -36,8 +40,8 @@ export const useGoogleAuth = () => {
         password: undefined,
         source: "Google",
       };
-      const signupRes = await handleSignupReq(signupBody);
-      if (!signupRes) return;
+      // const signupRes = await handleSignupReq(signupBody);
+      // if (!signupRes) return;
     }
 
     const body: LoginReqBody<"Google"> = {
@@ -46,8 +50,8 @@ export const useGoogleAuth = () => {
       source: "Google",
     };
 
-    //send login request to BE
-    handleLoginReq(body);
+    // handleLoginReq(body);
+    addItem(KEY_FOR_LS.user_info, { picture: picture });
   };
 
   return { handleGoogleLogin };

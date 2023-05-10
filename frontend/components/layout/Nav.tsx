@@ -3,7 +3,7 @@ import Link from "next/link";
 import classes from "@style/Auth.module.css";
 
 export const Nav = (): JSX.Element => {
-  const items: AuthType[] = ["login", "signup"];
+  const items: AuthType[] | string[] = ["login", "signup"];
   return (
     <nav className={classes.nav}>
       <ul>

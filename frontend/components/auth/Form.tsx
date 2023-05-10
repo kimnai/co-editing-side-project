@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { GoogleLogin } from "@react-oauth/google";
@@ -12,8 +11,8 @@ import { Error, useAuth } from "@hooks/useAuth";
 
 export const Form: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
-  const { query } = useRouter();
-  const { authType } = query;
+  const router = useRouter();
+  const { authType } = router.query;
   const formType: AuthType = authType?.includes("login") ? "login" : "signup";
   const { refs, errorState, handleSubmitForm, handleGoogleLogin } =
     useAuth(formType);
@@ -70,11 +69,9 @@ export const Form: React.FC = (): JSX.Element => {
       errors: checkFieldHasError("password"),
     },
   ];
-  console.log("errorState", errorState);
 
   return (
     <form
-      action="submit"
       className={classes.form}
       onSubmit={(e) => {
         e.preventDefault();
@@ -88,8 +85,9 @@ export const Form: React.FC = (): JSX.Element => {
             className={`${classes.tab} ${
               t.isActive ? classes["tab-active"] : ""
             }`}
+            onClick={() => router.push(`/auth/${t.name}`)}
           >
-            <Link href={`/auth/${t.name}`}>{t.name}</Link>
+            {t.name}
           </div>
         ))}
       </div>

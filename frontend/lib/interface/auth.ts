@@ -13,17 +13,10 @@ export interface DecodedGoogleCredential {
   picture: string;
 }
 
-//Todo: make password optional
-export interface LoginReqBody<T extends LoginSource> {
-  email: string;
-  password: T extends "Google" ? undefined : string;
-  source: T;
-}
-
-export interface SignupReqBody<T extends LoginSource> {
+export interface ReqBody<T> {
   username: string;
   email: string;
-  password: T extends "Google" ? undefined : string;
+  password: string;
   source: T;
 }
 

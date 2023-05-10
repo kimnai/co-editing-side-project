@@ -11,11 +11,9 @@ import {
 import {
   DecodedAccessToken,
   DecodedGoogleCredential,
-  LoginReqBody,
-  SignupReqBody,
   UserInfo,
 } from "@lib/interface/auth";
-import { AuthType } from "@lib/type/auth";
+import { AuthType, LoginReqBody, SignupReqBody } from "@lib/type/auth";
 import { KEY_FOR_LS } from "@lib/enum/auth";
 
 import { axiosInstance } from "api";
@@ -163,7 +161,6 @@ export const useAuth = (authType: AuthType) => {
       const signupBody: SignupReqBody<"Google"> = {
         username: name,
         email: email,
-        password: undefined,
         source: "Google",
       };
       const signupRes = await handleSignupReq(signupBody);
@@ -172,7 +169,6 @@ export const useAuth = (authType: AuthType) => {
 
     const body: LoginReqBody<"Google"> = {
       email: email,
-      password: undefined,
       source: "Google",
     };
 

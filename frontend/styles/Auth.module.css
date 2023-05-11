@@ -120,6 +120,7 @@
 
 .nav ul li {
   list-style-type: none;
+  cursor: pointer;
   margin: 0 1.5rem;
   color: var(--font-rg);
 }

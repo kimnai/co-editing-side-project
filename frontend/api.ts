@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { API_USER } from "@lib/api";
+import { handleTokenReq, handleTokenRotation } from "@hooks/useRotateToken";
 
 const baseUrl = "/backend";
 
@@ -28,3 +29,16 @@ axiosInstance.interceptors.request.use((config) => {
 
   return config;
 });
+
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error: AxiosError) => {
+    if (error.status === 403) {
+      await handleTokenRotation();
+      console.log("Token refreshed");
+      return error;
+    }
+  }
+);

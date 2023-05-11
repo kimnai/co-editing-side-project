@@ -8,7 +8,7 @@ export const Nav = (): JSX.Element => {
     <nav className={classes.nav}>
       <ul>
         {items.map((i) => (
-          <li key={i}>
+          <li key={i} data-test-id={`${i}-btn`}>
             <Link href={`/auth/${i}`}>
               {i.slice(0, 1).toUpperCase() + i.slice(1)}
             </Link>

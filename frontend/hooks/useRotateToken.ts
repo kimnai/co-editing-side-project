@@ -13,10 +13,9 @@ import { DecodedAccessToken, UserInfo } from "@lib/interface/auth";
  */
 const handleTokenApiReq = async (): Promise<string> => {
   const access_token = localStorage.getItem(KEY_FOR_LS.access_token);
-  if (access_token === null) return "Please log in first";
+  if (!access_token) return "Please log in first";
 
   const decoded = decode(access_token) as DecodedAccessToken;
-  if (!decoded) return "Please log in first";
   const isExpired = decoded ? Date.now() / 1000 > decoded.exp : null;
   if (isExpired === false) return "Token is valid";
 

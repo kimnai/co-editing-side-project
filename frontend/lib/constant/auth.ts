@@ -3,12 +3,15 @@ import { ErrorMessage } from "@lib/type/auth";
 export const criteria = {
   email: {
     regex: /\w*@\w*.\w*/,
+    hint: "Email should only include letters and numbers",
   },
   password: {
     minLength: 8,
+    hint: "Password length must be between 8 and 20",
   },
   username: {
     minLength: 5,
+    hint: "Username length must be between 5 and 20",
   },
 };
 

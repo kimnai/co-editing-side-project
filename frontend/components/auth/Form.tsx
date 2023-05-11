@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { GoogleLogin } from "@react-oauth/google";
 
 import classes from "@style/Auth.module.css";
@@ -92,7 +92,7 @@ export const Form: React.FC = (): JSX.Element => {
         ))}
       </div>
 
-      <div className={classes.formField}>
+      <div className={classes.formFields}>
         {errorState
           .filter((e) => e.field === "global")
           .map((e) => (
@@ -100,23 +100,24 @@ export const Form: React.FC = (): JSX.Element => {
               {e.message}
             </div>
           ))}
-        {getFields().map((f) => (
-          <div key={f.name}>
+        {getFields().map((f, i) => (
+          <div key={f.name} className={classes.field}>
             <label htmlFor={f.name}>{f.label}</label>
-            <input
-              ref={f.ref}
-              type={f.type}
-              className={f.errors.length > 0 ? classes["input-error"] : ""}
-            />
+            {
+              <Tooltip title={criteria[f.name].hint} arrow placement="bottom">
+                <input
+                  ref={f.ref}
+                  type={f.type}
+                  className={f.errors.length > 0 ? classes["input-error"] : ""}
+                />
+              </Tooltip>
+            }
+
             {f.adornments !== null && f.adornments}
             {f.errors.length > 0 &&
               f.errors.map((e) => (
                 <div className={classes.hint} key={`${e.field}_${e.type}`}>
-                  {e.type === "length" && e.field !== "email"
-                    ? `${e.field} length should be greater than ${
-                        criteria[e.field].minLength
-                      }`
-                    : `Invalid ${e.field} pattern`}
+                  {criteria[e.field].hint}
                 </div>
               ))}
           </div>

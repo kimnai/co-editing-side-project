@@ -42,44 +42,44 @@
   border-bottom: 2px solid var(--border-rg);
 }
 
-.form .formField {
+.form .formFields {
   flex-direction: column;
 }
 
-.formField div {
+.formFields div {
   display: flex;
   position: relative;
   flex-direction: column;
   margin-bottom: 1rem;
 }
 
-.formField .thirdParty {
+.formFields .thirdParty {
   text-align: center;
   padding: 2rem;
 }
 
-.formField label {
+.formFields label {
   font-size: smaller;
   margin-bottom: 0.2rem;
 }
 
-.formField input {
+.formFields input {
   background-color: var(--bg-rg);
   border: 1px solid var(--border-rg);
   padding: 1rem;
   border-radius: 0.2rem;
 }
 
-.formField .input-error {
+.formFields .input-error {
   background-color: var(--error-bg);
   border-color: var(--error-border);
 }
 
-.formField input:focus {
+.formFields input:focus {
   border-color: var(--input-focus);
 }
 
-.formField .adornment {
+.formFields .adornment {
   position: absolute;
   right: 0.2rem;
   top: 1.6rem;

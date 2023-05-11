@@ -29,6 +29,7 @@ func mapUrls() {
 	})
 
 	router.POST("/user/create", user.CreateUserHandler)
+	router.POST("/user/login", user.LoginUserHandler)
 }
 
 func main() {

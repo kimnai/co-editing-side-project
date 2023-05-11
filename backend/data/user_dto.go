@@ -27,3 +27,19 @@ func (user *User) CheckCreate() bool {
 
 	return true
 }
+
+func (user *User) CheckLogin() bool {
+	if user.Email == "" {
+		return false
+	}
+
+	if user.Source != "FirstParty" && user.Source != "Google" {
+		return false
+	}
+
+	if user.Source == "FirstParty" && user.Password == "" {
+		return false
+	}
+
+	return true
+}

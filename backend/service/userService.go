@@ -18,6 +18,7 @@ type userServiceImp struct{}
 
 type userServiceInterface interface {
 	CreateUser(data.User) *util.HttpError
+	LoginUser(data.User) (string, string, *util.HttpError)
 }
 
 func (s *userServiceImp) CreateUser(user data.User) *util.HttpError {
@@ -40,4 +41,22 @@ func (s *userServiceImp) CreateUser(user data.User) *util.HttpError {
 	}
 
 	return nil
+}
+
+func (s *userServiceImp) LoginUser(user data.User) (string, string, *util.HttpError) {
+	jwtToken, err := util.GenerateJwtToken(user.UserName, user.Email)
+	if err != nil {
+		return "", "", &util.HttpError{
+			StatusCode: http.StatusInternalServerError,
+			Error:      fmt.Errorf("Failed to create JWT token"),
+		}
+	}
+
+	refreshToken := util.GenerateRefreshToken()
+
+	if err := user.Login(refreshToken); err != nil {
+		return "", "", err
+	}
+
+	return jwtToken, refreshToken, nil
 }

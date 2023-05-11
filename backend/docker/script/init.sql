@@ -4,5 +4,6 @@ CREATE TABLE user_info(
 	password VARCHAR(100),
 	date_created VARCHAR(100),
 	source VARCHAR(20),
+	refresh_token VARCHAR(100),
 	PRIMARY KEY(email)
 );

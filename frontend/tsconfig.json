@@ -40,7 +40,7 @@
     "*.js",
     "jest.config.js",
     ".next/types/**/*.ts",
-    "__tests__/LoginForm.test.js"
+    "__tests__/AuthForm.test.js"
   ],
   "exclude": ["node_modules"]
 }

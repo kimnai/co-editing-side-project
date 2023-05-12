@@ -4,7 +4,8 @@ import type { AppProps } from "next/app";
 import { NextPage } from "next";
 import { AsideStatusProvider } from "../components/context/AsideStatusProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import NextProgress from "nextjs-progressbar";
+import { useNprogress } from "@hooks/useNprogress";
+import "@style/nprogress.css";
 
 type ComponentWithLayout = {
   getLayout: (page: JSX.Element) => JSX.Element;
@@ -15,6 +16,7 @@ interface AppPropsWithLayout extends AppProps {
 }
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  useNprogress();
   const getLayout =
     Component.getLayout ||
     ((page) => {
@@ -25,7 +27,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     <div>
       <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
         <AsideStatusProvider>
-          <NextProgress />
           {getLayout(<Component {...pageProps} />)}
         </AsideStatusProvider>
       </GoogleOAuthProvider>

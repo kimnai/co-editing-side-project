@@ -30,6 +30,7 @@ export interface Error {
 
 export const useAuth = (authType: AuthType) => {
   const { setItem, removeItem, addItem } = useLocalStorage();
+  const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const usernameref = useRef<HTMLInputElement>(null);
@@ -77,6 +78,7 @@ export const useAuth = (authType: AuthType) => {
     else errorMessage = errorRes[500];
 
     setErrorState((prev) => [{ field: "global", message: errorMessage }]);
+    setIsLoading(false);
   };
 
   /**
@@ -91,6 +93,7 @@ export const useAuth = (authType: AuthType) => {
     body: LoginReqBody<"FirstParty" | "Google">
   ) => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance.post(API_USER.LOGIN, body);
       if (!res.data) throw new Error();
 
@@ -107,6 +110,8 @@ export const useAuth = (authType: AuthType) => {
           body["source"] === "FirstParty" ? "FirstParty" : "Google",
       };
       setItem(KEY_FOR_LS.user_info, userInfo);
+      setIsLoading(false);
+
       router.push("/home");
       return res;
     } catch (error) {
@@ -123,9 +128,13 @@ export const useAuth = (authType: AuthType) => {
     body: SignupReqBody<"FirstParty" | "Google">
   ) => {
     try {
+      setIsLoading(true);
+
       const res = await axiosInstance.post(API_USER.SIGNUP, body);
       //TODO: display hint for user to login
       router.push("/auth/login");
+      setIsLoading(false);
+
       return res;
     } catch (error) {
       console.error(error);
@@ -194,6 +203,7 @@ export const useAuth = (authType: AuthType) => {
   return {
     refs,
     errorState,
+    isLoading,
     handleSubmitForm,
     handleValidation,
     handleLoginReq,

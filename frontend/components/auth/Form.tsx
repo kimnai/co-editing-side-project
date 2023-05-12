@@ -8,13 +8,14 @@ import classes from "@style/Auth.module.css";
 import { AuthType } from "@lib/type/auth";
 import { criteria } from "@lib/constant/auth";
 import { Error, useAuth } from "@hooks/useAuth";
+import { LoadingModal } from "@components/shared/LoadingModal";
 
 export const Form: React.FC = (): JSX.Element => {
   const [pwdIsVisible, setPwdIsVisible] = useState(false);
   const router = useRouter();
   const { authType } = router.query;
   const formType: AuthType = authType?.includes("login") ? "login" : "signup";
-  const { refs, errorState, handleSubmitForm, handleGoogleLogin } =
+  const { refs, errorState, isLoading, handleSubmitForm, handleGoogleLogin } =
     useAuth(formType);
 
   const tabs: { name: AuthType; isActive: boolean }[] = [
@@ -71,70 +72,76 @@ export const Form: React.FC = (): JSX.Element => {
   ];
 
   return (
-    <form
-      className={classes.form}
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmitForm();
-      }}
-    >
-      <div className={classes.tabs}>
-        {tabs.map((t) => (
-          <div
-            key={t.name}
-            className={`${classes.tab} ${
-              t.isActive ? classes["tab-active"] : ""
-            }`}
-            onClick={() => router.push(`/auth/${t.name}`)}
-          >
-            {t.name}
-          </div>
-        ))}
-      </div>
+    <>
+      <form
+        className={classes.form}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmitForm();
+        }}
+      >
+        {isLoading && <LoadingModal message="Loading..." />}
 
-      <div className={classes.formFields}>
-        {errorState
-          .filter((e) => e.field === "global")
-          .map((e) => (
-            <div key={e.message} className={classes.hint}>
-              {e.message}
+        <div className={classes.tabs}>
+          {tabs.map((t) => (
+            <div
+              key={t.name}
+              className={`${classes.tab} ${
+                t.isActive ? classes["tab-active"] : ""
+              }`}
+              onClick={() => router.push(`/auth/${t.name}`)}
+            >
+              {t.name}
             </div>
           ))}
-        {getFields().map((f, i) => (
-          <div key={f.name} className={classes.field}>
-            <label htmlFor={f.name}>{f.label}</label>
-            {
-              <Tooltip title={criteria[f.name].hint} arrow placement="bottom">
-                <input
-                  ref={f.ref}
-                  type={f.type}
-                  className={f.errors.length > 0 ? classes["input-error"] : ""}
-                />
-              </Tooltip>
-            }
-
-            {f.adornments !== null && f.adornments}
-            {f.errors.length > 0 &&
-              f.errors.map((e) => (
-                <div className={classes.hint} key={`${e.field}_${e.type}`}>
-                  {criteria[e.field].hint}
-                </div>
-              ))}
-          </div>
-        ))}
-        <button>{tabs.find((t) => t.isActive)?.name ?? tabs[0].name}</button>
-
-        <div className={classes.thirdParty}>
-          <div>Or continue with</div>
-          <GoogleLogin
-            type="icon"
-            logo_alignment="center"
-            onSuccess={(res) => handleGoogleLogin(res, formType)}
-            onError={() => console.log("error")}
-            containerProps={{ style: { margin: "auto" } }}
-          />
         </div>
-      </div>
-    </form>
+
+        <div className={classes.formFields}>
+          {errorState
+            .filter((e) => e.field === "global")
+            .map((e) => (
+              <div key={e.message} className={classes.hint}>
+                {e.message}
+              </div>
+            ))}
+          {getFields().map((f, i) => (
+            <div key={f.name} className={classes.field}>
+              <label htmlFor={f.name}>{f.label}</label>
+              {
+                <Tooltip title={criteria[f.name].hint} arrow placement="bottom">
+                  <input
+                    ref={f.ref}
+                    type={f.type}
+                    className={
+                      f.errors.length > 0 ? classes["input-error"] : ""
+                    }
+                  />
+                </Tooltip>
+              }
+
+              {f.adornments !== null && f.adornments}
+              {f.errors.length > 0 &&
+                f.errors.map((e) => (
+                  <div className={classes.hint} key={`${e.field}_${e.type}`}>
+                    {criteria[e.field].hint}
+                  </div>
+                ))}
+            </div>
+          ))}
+          <button>{tabs.find((t) => t.isActive)?.name ?? tabs[0].name}</button>
+
+          <div className={classes.thirdParty}>
+            <div>Or continue with</div>
+            <GoogleLogin
+              type="icon"
+              logo_alignment="center"
+              onSuccess={(res) => handleGoogleLogin(res, formType)}
+              onError={() => console.log("error")}
+              containerProps={{ style: { margin: "auto" } }}
+            />
+          </div>
+        </div>
+      </form>
+    </>
   );
 };

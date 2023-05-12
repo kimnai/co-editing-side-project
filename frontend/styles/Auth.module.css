@@ -1,0 +1,141 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 35rem;
+  height: max-content;
+  margin: 3rem;
+
+  color: var(--font-rg);
+  padding: 5rem;
+  padding-top: 4rem;
+  border: 1px solid var(--border-rg);
+  box-shadow: 0 5px 5px 5px var(--border-rg);
+  border-radius: var(--border-ra-rg);
+}
+
+.form > * {
+  width: 100%;
+  display: flex;
+}
+
+.form .tabs {
+  transition: all 0.5s;
+  border-bottom: 1px solid var(--border-rg);
+  margin-bottom: 2rem;
+}
+
+.form .tab {
+  width: 50%;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 1.6rem;
+  color: var(--font-dark);
+  cursor: pointer;
+}
+
+.form .tab:hover {
+  background-color: var(--bg-rg);
+}
+
+.tab-active {
+  border-bottom: 2px solid var(--border-rg);
+}
+
+.form .formFields {
+  flex-direction: column;
+}
+
+.formFields div {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.formFields .thirdParty {
+  text-align: center;
+  padding: 2rem;
+}
+
+.formFields label {
+  font-size: smaller;
+  margin-bottom: 0.2rem;
+}
+
+.formFields input {
+  background-color: var(--bg-rg);
+  border: 1px solid var(--border-rg);
+  padding: 1rem;
+  border-radius: 0.2rem;
+}
+
+.formFields .input-error {
+  background-color: var(--error-bg);
+  border-color: var(--error-border);
+}
+
+.formFields input:focus {
+  border-color: var(--input-focus);
+}
+
+.formFields .adornment {
+  position: absolute;
+  right: 0.2rem;
+  top: 1.6rem;
+  background: none;
+  border: none;
+}
+
+.form button {
+  justify-content: center;
+  align-items: center;
+  background-color: var(--btn-bg);
+  border: 1px solid var(--border-rg);
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+}
+
+.form button .error {
+  background-color: var(--error-bg);
+  border-color: var(--error-border);
+}
+
+.hint {
+  color: var(--error-border);
+}
+
+.nav {
+  display: flex;
+  padding: 1rem 4rem;
+}
+
+.nav ul {
+  width: 100%;
+  display: inherit;
+  align-items: center;
+  justify-content: end;
+}
+
+.nav ul li {
+  list-style-type: none;
+  margin: 0 1.5rem;
+  color: var(--font-rg);
+}
+
+.nav ul li > * {
+  text-decoration: none;
+  font-size: 2rem;
+}
+
+.nav ul li:last-child {
+  background-color: var(--font-rg);
+  color: white;
+  padding: 1.6rem;
+  border-radius: var(--border-ra-bg);
+}
+
+.nav ul li:last-child:hover {
+  background-color: var(--font-dark);
+}

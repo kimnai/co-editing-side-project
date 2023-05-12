@@ -22,6 +22,7 @@ export interface ReqBody<T> {
 
 export interface LoginRes {
   access_token: string;
+  error: string;
 }
 
 export interface DecodedAccessToken {

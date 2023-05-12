@@ -11,6 +11,7 @@ import {
 import {
   DecodedAccessToken,
   DecodedGoogleCredential,
+  LoginRes,
   UserInfo,
 } from "@lib/interface/auth";
 import { AuthType, LoginReqBody, SignupReqBody } from "@lib/type/auth";
@@ -19,6 +20,7 @@ import { KEY_FOR_LS } from "@lib/enum/auth";
 import { axiosInstance } from "api";
 import { useLocalStorage } from "./useLocalStorage";
 import { GoogleCredentialResponse } from "@react-oauth/google";
+import { AxiosError } from "axios";
 
 export interface Error {
   field: "email" | "password" | "username" | "global";
@@ -62,7 +64,8 @@ export const useAuth = (authType: AuthType) => {
     return false;
   };
 
-  const handleApiError = (error) => {
+  const handleApiError = (error: AxiosError) => {
+    if (!error || !error.response) return;
     let errorMessage: string;
     const errorRes =
       authType === "login" ? loginErrorResponse : signupErrorResponse;
@@ -89,13 +92,16 @@ export const useAuth = (authType: AuthType) => {
   ) => {
     try {
       const res = await axiosInstance.post(API_USER.LOGIN, body);
-      if (!res.data) throw new Error("Data not found");
+      if (!res.data) throw new Error();
 
-      setItem(KEY_FOR_LS.access_token, res.data);
-      const decodedAccessToken = decode(res.data) as DecodedAccessToken;
+      const data: LoginRes = res.data;
+      setItem(KEY_FOR_LS.access_token, data.access_token);
+      const decodedAccessToken = decode(
+        data.access_token
+      ) as DecodedAccessToken;
 
       const userInfo: UserInfo = {
-        username: decodedAccessToken.username ?? decodedAccessToken.username,
+        username: decodedAccessToken.username,
         email: decodedAccessToken.email,
         loginProvider:
           body["source"] === "FirstParty" ? "FirstParty" : "Google",
@@ -122,7 +128,7 @@ export const useAuth = (authType: AuthType) => {
       router.push("/auth/login");
       return res;
     } catch (error) {
-      console.log("error", error);
+      console.error(error);
       handleApiError(error);
     }
   };

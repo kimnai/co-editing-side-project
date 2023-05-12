@@ -1,4 +1,4 @@
-import { LoginSource, SignupResStatusCode } from "@lib/type/auth";
+import { LoginSource } from "@lib/type/auth";
 
 export interface DecodedGoogleCredential {
   email: string;

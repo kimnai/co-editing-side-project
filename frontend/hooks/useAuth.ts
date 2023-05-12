@@ -95,7 +95,7 @@ export const useAuth = (authType: AuthType) => {
       const decodedAccessToken = decode(res.data) as DecodedAccessToken;
 
       const userInfo: UserInfo = {
-        username: decodedAccessToken.username ?? decodedAccessToken.name,
+        username: decodedAccessToken.username ?? decodedAccessToken.username,
         email: decodedAccessToken.email,
         loginProvider:
           body["source"] === "FirstParty" ? "FirstParty" : "Google",

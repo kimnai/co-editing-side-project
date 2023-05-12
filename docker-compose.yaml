@@ -12,7 +12,7 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "4000:8080"
-    depends_on: 
+    depends_on:
       - postgres
     restart: on-failure
   frontend:
@@ -22,8 +22,8 @@ services:
       context: ./frontend/
       dockerfile: ./docker/Dockerfile
     ports:
-      - "3001:3001"
-    command: ["npm", "run", "dev", "--", "-p", "3001"]
+      - "3000:3000"
+    command: ["npm", "run", "dev", "--", "-p", "3000"]
     restart: on-failure
     volumes:
       - ./frontend/:/app/:ro
@@ -42,7 +42,6 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "5432:5432"
-  
+
 volumes:
   test-data:
-

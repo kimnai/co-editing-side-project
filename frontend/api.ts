@@ -1,6 +1,7 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { API_USER } from "@lib/api";
-import { handleTokenReq, handleTokenRotation } from "@hooks/useRotateToken";
+import { handleTokenRotation } from "@hooks/useRotateToken";
+import { KEY_FOR_LS } from "@lib/enum/auth";
 
 const baseUrl = "/backend";
 
@@ -21,7 +22,7 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
   }
 
-  const tokenFromStorage = localStorage.getItem("access_token");
+  const tokenFromStorage = localStorage.getItem(KEY_FOR_LS.access_token);
 
   if (tokenFromStorage === null) return config;
   const tokens = JSON.parse(tokenFromStorage);
@@ -34,8 +35,9 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error: AxiosError) => {
-    if (error.status === 403) {
+  async (error: AxiosError<any>) => {
+    if (!error.response) return error;
+    if (error.response.status === 403) {
       await handleTokenRotation();
       console.log("Token refreshed");
       return error;

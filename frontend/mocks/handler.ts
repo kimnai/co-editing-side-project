@@ -1,4 +1,5 @@
 import { API_USER } from "@lib/api";
+import { sign } from "jsonwebtoken";
 import { rest } from "msw";
 
 const BE_URL = "http://localhost/backend";
@@ -30,9 +31,18 @@ export const handler = [
   }),
 
   rest.post(`http://localhost/backend/refresh`, (req, res, ctx) => {
-    const cookies = req.cookies;
-    console.log(cookies);
-    const access_token = "updated_access_token";
+    console.log("refreshed");
+    const access_token = sign(
+      {
+        username: "lydia",
+        email: "test@gmail.com",
+        rotated: true,
+        triggeredByInterceptor: true,
+      },
+      "my-secret",
+      { expiresIn: "1h" }
+    );
+
     return res(
       ctx.json({
         access_token: access_token,
@@ -40,7 +50,8 @@ export const handler = [
     );
   }),
 
-  rest.post("http://localhost/backend/resource", (req, res, ctx) => {
+  rest.get("http://localhost/backend/resource", (req, res, ctx) => {
+    console.log("request for resource", req);
     return res(ctx.status(403));
   }),
 ];

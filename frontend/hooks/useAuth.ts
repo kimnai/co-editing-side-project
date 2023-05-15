@@ -11,7 +11,7 @@ import {
 import {
   DecodedAccessToken,
   DecodedGoogleCredential,
-  LoginRes,
+  TokenRes,
   UserInfo,
 } from "@lib/interface/auth";
 import { AuthType, LoginReqBody, SignupReqBody } from "@lib/type/auth";
@@ -97,7 +97,7 @@ export const useAuth = (authType: AuthType) => {
       const res = await axiosInstance.post(API_USER.LOGIN, body);
       if (!res.data) throw new Error();
 
-      const data: LoginRes = res.data;
+      const data: TokenRes = res.data;
       setItem(KEY_FOR_LS.access_token, data.access_token);
       const decodedAccessToken = decode(
         data.access_token

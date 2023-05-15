@@ -20,7 +20,7 @@ export interface ReqBody<T> {
   source: T;
 }
 
-export interface LoginRes {
+export interface TokenRes {
   access_token: string;
   error: string;
 }

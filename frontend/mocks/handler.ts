@@ -38,6 +38,7 @@ export const handler = [
         email: "test@gmail.com",
         rotated: true,
         triggeredByInterceptor: true,
+        isSilentLogin: true,
       },
       "my-secret",
       { expiresIn: "1h" }

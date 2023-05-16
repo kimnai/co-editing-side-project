@@ -15,9 +15,12 @@ import { decode } from "jsonwebtoken";
  */
 export const handleTokenApiReq = async (): Promise<TokenRes | string> => {
   try {
-    //if there is no token in localStorage, instruct user to log in first
+    //if there is no token or userInfo in localStorage, instruct user to log in first
     const access_token = localStorage.getItem(KEY_FOR_LS.access_token);
-    if (!access_token) throw new Error(refreshTokenErrorResponse[401]);
+    const userInfoInLS = localStorage.getItem(KEY_FOR_LS.user_info);
+
+    if (!access_token || !userInfoInLS)
+      throw new Error(refreshTokenErrorResponse[401]);
 
     //if token is not expired, then return
     const decoded = decode(access_token) as DecodedAccessToken;
@@ -69,7 +72,7 @@ export const useRotateToken = () => {
     isSuccess,
   } = useMutation({
     mutationKey: ["token", "refresh"],
-    mutationFn: () => handleTokenRotation(),
+    mutationFn: handleTokenRotation,
     onError: handleLogout,
     retry: 1,
   });

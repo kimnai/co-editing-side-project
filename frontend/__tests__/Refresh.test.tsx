@@ -25,6 +25,27 @@ const wrapper = ({ children }) => {
 
 jest.mock("next/router", () => require("next-router-mock"));
 
+const handleSetMatchingDataInLS = () => {
+  const userInfo = { username: "lydia", email: "test@gmail.com" };
+  const access_token = sign(userInfo, "my-secret", { expiresIn: "0s" });
+  localStorage.setItem(KEY_FOR_LS.access_token, access_token);
+  localStorage.setItem(KEY_FOR_LS.user_info, JSON.stringify(userInfo));
+};
+
+const handleSetDismatchingDataInLS = () => {
+  const userInfo = { username: "lydiaaa", email: "test@gmail.com" };
+  const access_token = sign(
+    { username: "lydia", email: "test@gmail.com" },
+    "my-secret",
+    { expiresIn: "0s" }
+  );
+  localStorage.setItem(
+    KEY_FOR_LS.access_token,
+    JSON.stringify({ access_token: access_token })
+  );
+  localStorage.setItem(KEY_FOR_LS.user_info, JSON.stringify(userInfo));
+};
+
 describe("Token api request and storage functions correctly", () => {
   it("if token is not expired, then refresh request won't be made", async () => {
     const access_token = sign(
@@ -72,16 +93,7 @@ describe("Token api request and storage functions correctly", () => {
   });
 
   it("If token mutation fails, then user will be logout", async () => {
-    const access_token = sign(
-      { username: "lydia", email: "test@gmail.com", rotated: false },
-      "my-secret",
-      { expiresIn: "0s" }
-    );
-    localStorage.setItem(KEY_FOR_LS.access_token, access_token);
-    localStorage.setItem(
-      KEY_FOR_LS.user_info,
-      JSON.stringify({ username: "lydiaaa", email: "test@gmail.com" })
-    );
+    handleSetDismatchingDataInLS();
 
     const { result } = renderHook(useRotateToken, { wrapper });
     const { mutateToken } = result.current;
@@ -100,14 +112,7 @@ describe("Token api request and storage functions correctly", () => {
 
 describe("axios interceptor functions correctly", () => {
   it("If request fails with 403 code, then token will be refreshed", async () => {
-    const userInfo = { username: "lydia", email: "test@gmail.com" };
-    const access_token = sign(userInfo, "my-secret", { expiresIn: "0s" });
-    localStorage.setItem(
-      KEY_FOR_LS.access_token,
-      JSON.stringify({ access_token: access_token })
-    );
-    localStorage.setItem(KEY_FOR_LS.user_info, JSON.stringify(userInfo));
-
+    handleSetMatchingDataInLS();
     try {
       const res = await axiosInstance.get("/resource");
     } catch (error) {
@@ -120,39 +125,20 @@ describe("axios interceptor functions correctly", () => {
   });
 });
 
-// describe("Token rotation functions correctly", () => {
-//   it("If LS contains access_token and userInfo, then it will hit /refresh when user click login button", async () => {
-//     render(<Nav />);
-//     const loginBtn = screen.getByTestId("login-btn");
+test("silent login is enabled", async () => {
+  handleSetMatchingDataInLS();
 
-//     //set userInfo & access_token in localStorage
-//     useLocalStorageHook.current.setItem(
-//       KEY_FOR_LS.access_token,
-//       "access_token"
-//     );
-//     useLocalStorageHook.current.setItem(KEY_FOR_LS.user_info, {
-//       email: "123@gmail.com",
-//       username: "123",
-//       loginProvider: "First_party",
-//     });
+  render(<Nav />, { wrapper });
+  const loginBtn = screen.getByTestId("login-btn");
+  await act(async () => {
+    await userEvent.click(loginBtn);
+  });
 
-//     //button clicked
-//     await userEvent.click(loginBtn);
+  const new_access_token = localStorage.getItem(KEY_FOR_LS.access_token);
+  expect(new_access_token).not.toBe(null);
 
-//     const access_token = useLocalStorageHook.current.getItem(
-//       KEY_FOR_LS.access_token
-//     );
+  const decoded = decode(new_access_token);
+  console.log(decoded);
 
-//     expect(access_token).toBe("updated_access_token");
-//   });
-
-//   // it("If request failed with 403 error, then it will refresh token automatically", async () => {
-//   //   await act(async () => {
-//   //     const res = await axiosInstance.post("http://localhost/backend/resource");
-//   //   });
-
-//   //   const { result } = renderHook(useRotateToken);
-
-//   //   expect(result.current.isFetching).toBe(true);
-//   // });
-// });
+  expect(decoded).toHaveProperty("isSilentLogin", true);
+});

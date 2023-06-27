@@ -1,19 +1,37 @@
-label {
-  font-size: smaller;
-  margin-bottom: 0.2rem;
+.backdrop {
+  z-index: 999;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-input {
-  background-color: var(--bg-rg);
-  border: 1px solid var(--border-rg);
-  padding: 1rem;
+.loading-modal {
+  z-index: 9999;
+  margin: auto;
+  padding: 2rem;
+
+  display: inherit;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  color: white;
+
+  border-radius: var(--border-ra-bg);
+  background-color: rgba(42, 28, 28, 0.576);
+  min-width: 200px;
+  min-height: 200px;
+  box-shadow: 0px 5px 10px var(--bg-rg);
 }
 
-.form input .error {
-  background-color: var(--error-bg);
-  border-color: var(--error-border);
-}
-
-.form input:focus {
-  border-color: var(--input-focus);
+.loading-modal > * {
+  margin: 1rem 0;
 }

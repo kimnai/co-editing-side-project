@@ -1,7 +1,15 @@
-import React from "react";
+import { LayoutPublic } from "@components/layout/LayoutPuplic";
 
-const Home: React.FC = () => {
-  return <div>Welcome to home</div>;
+const Home = () => {
+  return (
+    <>
+      <div>Welcome</div>
+    </>
+  );
+};
+
+Home.getLayout = (page) => {
+  return <LayoutPublic>{page}</LayoutPublic>;
 };
 
 export default Home;

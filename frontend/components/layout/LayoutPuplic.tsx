@@ -1,15 +1,12 @@
 import React, { PropsWithChildren } from "react";
 import classes from "@style/Layout.module.css";
-import { Aside } from "./Aside";
+import { Nav } from "./Nav";
 
-export const LayoutPublic: React.FC = (props: PropsWithChildren) => {
+export const LayoutPublic = (props: PropsWithChildren) => {
   return (
-    <div className={classes.container}>
-      <nav className={classes.nav}>
-        <div>Sign up</div>
-      </nav>
-      <Aside />
+    <>
+      <Nav />
       <main className={classes.main}>{props.children}</main>
-    </div>
+    </>
   );
 };

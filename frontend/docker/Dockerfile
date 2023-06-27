@@ -8,5 +8,5 @@ RUN npm ci && \
 
 FROM build as last
 COPY ./ ./
-RUN npm run build && \
+RUN npm run build:dev && \
     echo "Build finish"

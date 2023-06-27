@@ -8,6 +8,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   publicRuntimeConfig,
+  // experimental: {
+  //   appDir: true,
+  // },
   async rewrites() {
     return [
       {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/co-editing-side-project/backend/datastore/postgres"
+	"github.com/co-editing-side-project/backend/router/user"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,9 @@ func mapUrls() {
 			c.String(http.StatusOK, currentDate)
 		}
 	})
+
+	router.POST("/user/create", user.CreateUserHandler)
+	router.POST("/user/login", user.LoginUserHandler)
 }
 
 func main() {

@@ -30,6 +30,7 @@ func mapUrls() {
 
 	router.POST("/user/create", user.CreateUserHandler)
 	router.POST("/user/login", user.LoginUserHandler)
+	router.GET("/user/ping", user.PingUserHandler)
 }
 
 func main() {

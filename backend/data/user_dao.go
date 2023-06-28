@@ -99,7 +99,7 @@ func (user *User) Login(refreshToken string) *util.HttpError {
 		log.Printf("Failed to login because the email is not found")
 		return &util.HttpError{
 			StatusCode: http.StatusUnauthorized,
-			Error:      fmt.Errorf("Unauthorized"),
+			Error:      fmt.Errorf("Email does not exist"),
 		}
 	}
 
@@ -116,7 +116,7 @@ func (user *User) Login(refreshToken string) *util.HttpError {
 			log.Printf("Failed to login because the password is incorrect")
 			return &util.HttpError{
 				StatusCode: http.StatusUnauthorized,
-				Error:      fmt.Errorf("Unauthorized"),
+				Error:      fmt.Errorf("Password is not correct"),
 			}
 		}
 	}

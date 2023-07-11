@@ -6,6 +6,7 @@ import { AsideStatusProvider } from "../components/context/AsideStatusProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useNprogress } from "@hooks/useNprogress";
 import "@style/nprogress.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 type ComponentWithLayout = {
   getLayout: (page: JSX.Element) => JSX.Element;
@@ -14,6 +15,8 @@ type ComponentWithLayout = {
 interface AppPropsWithLayout extends AppProps {
   Component: ComponentWithLayout;
 }
+
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   useNprogress();
@@ -24,12 +27,16 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     });
 
   return (
-    <div>
-      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-        <AsideStatusProvider>
-          {getLayout(<Component {...pageProps} />)}
-        </AsideStatusProvider>
-      </GoogleOAuthProvider>
-    </div>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          <AsideStatusProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </AsideStatusProvider>
+        </GoogleOAuthProvider>
+      </QueryClientProvider>
+    </>
   );
 }
